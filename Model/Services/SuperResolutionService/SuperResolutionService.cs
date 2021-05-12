@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace Model.Services.SuperResolutionService
 {
@@ -22,7 +23,8 @@ namespace Model.Services.SuperResolutionService
             };
 
             // Create a session with the model and run it
-            using (var session = new InferenceSession(Path.Combine(Directory.GetCurrentDirectory(), "Assets", "super_resolution_2x.onnx")))
+            // Run the session with the model
+            using (InferenceSession session = new InferenceSession(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Assets", "super_resolution_2x.onnx"), SessionOptions.MakeSessionOptionWithCudaProvider(0)))
             {
                 IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results = session.Run(input);
 
