@@ -1,31 +1,16 @@
 ﻿@page
 @model Web.Pages.IndexModel
 @{
-    Layout = null;
+    ViewData["Title"] = "Super Resolution";
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Index</title>
-</head>
-<body>
-
-    <form method="post" asp-page="Index" enctype="multipart/form-data">
-        Fundus Image
-        <br />
-        <input type="file" name="file" accept="image/*" />
-        <input type="submit" value="Upload" />
-        @if (Model.ImageBytes != null)
-        {
-            <span>
-                <br />
-                <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(Model.ImageBytes))" />
-            </span>
-
-        }
-    </form>
-</body>
-</html>
+<form method="post" asp-page="Index" enctype="multipart/form-data">
+    Fundus Image
+    <br />
+    <input type="file" name="file" accept="image/*" />
+    <input type="submit" value="Upload" />
+    @if (Model.ImageBytes != null)
+    {
+        <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(Model.ImageBytes))" />
+    }
+</form>

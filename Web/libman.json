@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "provider": "cdnjs",
+      "library": "bootswatch@4.6.0",
+      "destination": "wwwroot/lib/bootswatch/",
+      "files": [
+        "litera/bootstrap.css"
+      ]
+    },
+    {
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "jquery.js"
+      ]
+    },
+    {
+      "library": "twitter-bootstrap@4.6.0",
+      "destination": "wwwroot/lib/twitter-bootstrap/",
+      "files": [
+        "js/bootstrap.js"
+      ]
+    },
+    {
+      "provider": "cdnjs",
+      "library": "popper.js@2.9.2",
+      "destination": "wwwroot/lib/popper.js/",
+      "files": [
+        "umd/popper.js"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "outputFileName": "wwwroot/bundles/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css",
+      "wwwroot/lib/bootswatch/litera/bootstrap.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/bundles/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js",
+      "wwwroot/lib/jquery/jquery.js",
+      "wwwroot/lib/popper.js/umd/popper.js",
+      "wwwroot/lib/twitter-bootstrap/js/bootstrap.js"
+    ]
+  }
+]
