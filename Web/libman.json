@@ -18,18 +18,33 @@
       ]
     },
     {
-      "library": "twitter-bootstrap@4.6.0",
-      "destination": "wwwroot/lib/twitter-bootstrap/",
+      "library": "popper.js@2.9.2",
+      "destination": "wwwroot/lib/popper.js/",
       "files": [
-        "js/bootstrap.js"
+        "umd/popper.js.map",
+        "umd/popper.js"
       ]
     },
     {
       "provider": "cdnjs",
-      "library": "popper.js@2.9.2",
-      "destination": "wwwroot/lib/popper.js/",
+      "library": "twitter-bootstrap@4.6.0",
+      "destination": "wwwroot/lib/twitter-bootstrap/",
       "files": [
-        "umd/popper.js"
+        "js/bootstrap.js",
+        "js/bootstrap.js.map"
+      ]
+    },
+    {
+      "library": "font-awesome@4.7.0",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "css/font-awesome.css",
+        "fonts/fontawesome-webfont.eot",
+        "fonts/fontawesome-webfont.svg",
+        "fonts/fontawesome-webfont.ttf",
+        "fonts/fontawesome-webfont.woff",
+        "fonts/fontawesome-webfont.woff2",
+        "fonts/FontAwesome.otf"
       ]
     }
   ]

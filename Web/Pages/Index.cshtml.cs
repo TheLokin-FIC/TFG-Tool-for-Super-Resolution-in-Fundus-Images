@@ -20,15 +20,18 @@ namespace Web.Pages
 
         public void OnPost(IFormFile file)
         {
-            using (MemoryStream stream = new MemoryStream())
+            if (file != null)
             {
-                file.CopyTo(stream);
-                using (Image image = Image.FromStream(stream))
+                using (MemoryStream stream = new MemoryStream())
                 {
-                    Bitmap input = new Bitmap(image);
-                    Bitmap output = superResolutionService.Upscale(input);
+                    file.CopyTo(stream);
+                    using (Image image = Image.FromStream(stream))
+                    {
+                        Bitmap input = new Bitmap(image);
+                        Bitmap output = superResolutionService.Upscale(input);
 
-                    ImageBytes = ConvertBitmapToBytes(output);
+                        ImageBytes = ConvertBitmapToBytes(output);
+                    }
                 }
             }
         }

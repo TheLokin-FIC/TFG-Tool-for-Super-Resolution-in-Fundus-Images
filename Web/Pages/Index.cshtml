@@ -4,13 +4,26 @@
     ViewData["Title"] = "Super Resolution";
 }
 
-<form method="post" asp-page="Index" enctype="multipart/form-data">
-    Fundus Image
-    <br />
-    <input type="file" name="file" accept="image/*" />
-    <input type="submit" value="Upload" />
-    @if (Model.ImageBytes != null)
-    {
-        <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(Model.ImageBytes))" />
-    }
-</form>
+<div class="try-it">
+    <div class="result-area">
+        @if (Model.ImageBytes != null)
+        {
+            <img class="placeholder-image" src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(Model.ImageBytes))" />
+        }
+    </div>
+</div>
+
+<div class="info">
+    <h1>Super Resolution</h1>
+    <p class="description">With super resolution powered by deep learning, you can increase the resolution of your images without losing rich features.</p>
+    <form method="post" asp-page="Index" enctype="multipart/form-data">
+        <div class="form-group">
+            <input class="input-file form-control-file" type="file" name="file" accept="image/*" id="file">
+            <label class="btn btn-file btn-block" for="file">
+                <i class="icon-file fa"></i>
+                <span class="js-filename">Choose an image</span>
+            </label>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" value="Upload">Upload</button>
+    </form>
+</div>
