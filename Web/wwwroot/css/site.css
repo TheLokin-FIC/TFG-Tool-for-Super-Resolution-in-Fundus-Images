@@ -33,7 +33,7 @@
             }
 
         main .try-it .loading {
-            color: rgb(194, 209, 217);
+            color: rgba(194, 209, 217, 0.5);
             width: 3rem;
             height: 3rem;
             position: absolute;
@@ -64,7 +64,6 @@
         }
 
         main .info .btn-file {
-            color: #1c1622;
             border: 2px solid var(--secondary);
             overflow: hidden;
             text-overflow: ellipsis;
