@@ -42,7 +42,6 @@ namespace Web
             }
 
             app.UseStaticFiles();
-
             app.UseMvc();
         }
     }
