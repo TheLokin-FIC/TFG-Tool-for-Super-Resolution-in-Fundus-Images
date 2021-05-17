@@ -14,5 +14,5 @@ $('.input-file').each(function () {
 });
 
 $('form').submit(function () {
-    $('.loading').css('visibility', 'visible');
+    $('.spinner').css('visibility', 'visible');
 });

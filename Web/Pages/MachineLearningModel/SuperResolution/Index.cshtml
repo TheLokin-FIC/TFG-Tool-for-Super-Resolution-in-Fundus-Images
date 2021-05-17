@@ -8,9 +8,16 @@
     <div class="result-area">
         @if (Model.ImageBytes != null)
         {
-            <img class="placeholder-image" src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(Model.ImageBytes))" />
+            <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(Model.ImageBytes))" />
         }
-        <span class="spinner-border loading" />
+        else
+        {
+            <i class="fa fa-file-image-o"></i>
+        }
+        <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+            <circle class="path-background" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+            <circle class="path-foreground" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+        </svg>
     </div>
 </div>
 
