@@ -1,6 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.ML.OnnxRuntime;
 using Model.Services.SuperResolutionService;
+using Model.Services.SuperResolutionService.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -11,26 +17,43 @@ namespace Web.Pages.MachineLearningModel.SuperResolution
     {
         private readonly ISuperResolutionService superResolutionService;
 
-        public byte[] ImageBytes;
+        public IList<SuperResolutionModelDetails> SuperResolutionModelDetails { get; private set; }
+
+        [BindProperty]
+        public int ModelId { get; set; }
+
+        [BindProperty, Required(ErrorMessage = "Please choose an image.")]
+        public IFormFile InputFile { get; set; }
+
+        public string ImageByte64 { get; set; }
 
         public IndexModel(ISuperResolutionService superResolutionService)
         {
             this.superResolutionService = superResolutionService;
+            SuperResolutionModelDetails = superResolutionService.FindUpscaleFactors("Super Resolution SRResNet SSIM");
+            ModelId = SuperResolutionModelDetails[0].Id;
         }
 
-        public void OnPost(IFormFile file, string upscaleFactor)
+        public void OnPost()
         {
-            if (file != null)
+            if (ModelState.IsValid)
             {
                 using (MemoryStream stream = new MemoryStream())
                 {
-                    file.CopyTo(stream);
+                    InputFile.CopyTo(stream);
                     using (Image image = Image.FromStream(stream))
                     {
-                        Bitmap input = new Bitmap(image);
-                        Bitmap output = superResolutionService.Upscale(input);
+                        try
+                        {
+                            Bitmap input = new Bitmap(image);
+                            Bitmap output = superResolutionService.UpscaleImage(ModelId, input);
 
-                        ImageBytes = ConvertBitmapToBytes(output);
+                            ImageByte64 = string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(ConvertBitmapToBytes(output)));
+                        }
+                        catch (OnnxRuntimeException)
+                        {
+                            ModelState.AddModelError("InputFile", "An error occurred on the server while processing the image.");
+                        }
                     }
                 }
             }

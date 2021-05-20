@@ -13,6 +13,11 @@ $('.input-file').each(function () {
     });
 });
 
-$('form').submit(function () {
-    $('.spinner').css('visibility', 'visible');
+$('form').submit(function (evt) {
+    if ($('#file').get(0).files.length) {
+        $('.field-validation-error').each(function () {
+            $(this).css('display', 'none');
+        });
+        $('.spinner').css('visibility', 'visible');
+    }
 });

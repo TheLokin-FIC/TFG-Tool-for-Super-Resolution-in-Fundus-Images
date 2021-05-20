@@ -81,6 +81,7 @@
 
         main .info .btn-file {
             border: 2px solid var(--secondary);
+            margin: 0;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -141,6 +142,13 @@ footer {
         main .info {
             width: auto;
         }
+}
+
+.field-validation-error {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #d9534f;
 }
 
 .spinner {
