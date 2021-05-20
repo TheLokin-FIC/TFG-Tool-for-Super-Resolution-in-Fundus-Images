@@ -1,0 +1,219 @@
+﻿main {
+    max-width: 1100px;
+    margin: 40px auto 0;
+    display: grid;
+    grid-column-gap: 35px;
+    grid-template-columns: 500px auto;
+}
+
+    main h1 {
+        color: #53626c;
+        font-size: 2.3rem;
+    }
+
+    main .try-it {
+        width: 500px;
+        height: 500px;
+        border: 1px solid #c2d1d9;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+    }
+
+        main .try-it .result-area {
+            width: 100%;
+            height: 100%;
+        }
+
+            main .try-it .result-area img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                position: relative;
+            }
+
+            main .try-it .result-area i {
+                color: var(--secondary);
+                font-size: 8rem;
+                position: absolute;
+                top: calc(50% - 4rem);
+                left: calc(50% - 4rem);
+            }
+
+            main .try-it .result-area svg {
+                width: 3rem;
+                height: 3rem;
+                position: absolute;
+                top: calc(50% - 1.5rem);
+                left: calc(50% - 1.5rem);
+                visibility: hidden;
+            }
+
+        main .try-it .loader {
+            width: 3rem;
+            height: 3rem;
+            position: absolute;
+            top: calc(50% - 1.5rem);
+            left: calc(50% - 1.5rem);
+            visibility: hidden;
+        }
+
+    main .info {
+        width: 500px;
+        padding: 40px 0 50px 0;
+    }
+
+        main .info .description {
+            color: #1d2129;
+            font-size: 14px;
+            opacity: 0.85;
+            margin: 50px 0 30px 0;
+        }
+
+        main .info .input-file {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+
+        main .info .btn-file {
+            border: 2px solid var(--secondary);
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+            main .info .btn-file:hover {
+                border-color: var(--primary);
+            }
+
+            main .info .btn-file:focus, .btn-file.focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 0.2rem rgba(173, 181, 189, 0.5);
+            }
+
+            main .info .btn-file .icon-file:before {
+                content: "\f093";
+            }
+
+        main .info .has-file .icon-file:before {
+            content: "\f00c";
+            color: #5aac7b;
+        }
+
+footer {
+    padding: 20px 20px 1px 20px;
+    background-color: #f1f5f8;
+}
+
+    footer p {
+        color: #a3a8ac;
+        text-align: center;
+        font-size: 12px;
+    }
+
+@media screen and (max-width:960px) {
+    main {
+        max-width: 600px;
+        grid-template-columns: 300px auto;
+    }
+
+        main .try-it {
+            width: 300px;
+            height: 300px;
+            margin: 50px 0 0;
+        }
+
+        main .info {
+            width: 300px;
+        }
+}
+
+@media screen and (max-width:600px) {
+    main {
+        max-width: 300px;
+        display: block;
+    }
+
+        main .info {
+            width: auto;
+        }
+}
+
+.field-validation-error {
+    width: 100%;
+    margin-top: 0.25rem;
+    font-size: 80%;
+    color: #d9534f;
+}
+
+.spinner {
+    animation: rotator 1.4s linear infinite;
+}
+
+@keyframes rotator {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(270deg);
+    }
+}
+
+.path-background {
+    stroke: rgba(194, 209, 217, 0.5);
+    stroke-dasharray: 140;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: dash 1.4s ease-in-out infinite;
+}
+
+.path-foreground {
+    stroke-dasharray: 187;
+    stroke-dashoffset: 0;
+    transform-origin: center;
+    animation: dash 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+}
+
+@keyframes dash {
+    0% {
+        stroke-dashoffset: 187;
+    }
+
+    50% {
+        stroke-dashoffset: 47;
+        transform: rotate(135deg);
+    }
+
+    100% {
+        stroke-dashoffset: 187;
+        transform: rotate(450deg);
+    }
+}
+
+@keyframes colors {
+    0% {
+        stroke: #4285f4;
+    }
+
+    25% {
+        stroke: #de3e35;
+    }
+
+    50% {
+        stroke: #f7c223;
+    }
+
+    75% {
+        stroke: #1b9a59;
+    }
+
+    100% {
+        stroke: #4285f4;
+    }
+}
