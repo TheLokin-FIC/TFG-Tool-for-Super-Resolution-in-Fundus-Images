@@ -1,23 +1,13 @@
-$('.input-file').each(function () {
-    var $input = $(this);
-    var $label = $input.next('.btn-file');
-    var labelValue = $label.html();
+function SetPageTitle(title) {
+    document.title = title;
+}
 
-    $input.on('change', function (element) {
-        if (element.target.value) {
-            var filename = element.target.value.split('\\').pop();
-            $label.addClass('has-file').find('.js-filename').html(filename);
-        } else {
-            $label.removeClass('has-file').html(labelValue);
-        }
-    });
-});
+function UpdateInputFile(filename) {
+    var $label = $('.input-file').next('.btn-file');
+    $label.addClass('has-file').find('.js-filename').html(filename);
+}
 
-$('form').submit(function (evt) {
-    if ($('#file').get(0).files.length) {
-        $('.field-validation-error').each(function () {
-            $(this).css('display', 'none');
-        });
-        $('.spinner').css('visibility', 'visible');
-    }
-});
+function ResetInputFile(message) {
+    var $label = $('.input-file').next('.btn-file');
+    $label.removeClass('has-file').find('.js-filename').html(message);
+}

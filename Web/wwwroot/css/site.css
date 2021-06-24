@@ -11,6 +11,11 @@
         font-size: 2.3rem;
     }
 
+    main h2 {
+        color: #53626c;
+        font-size: 2.3rem;
+    }
+
     main .try-it {
         width: 500px;
         height: 500px;
@@ -46,17 +51,7 @@
                 position: absolute;
                 top: calc(50% - 1.5rem);
                 left: calc(50% - 1.5rem);
-                visibility: hidden;
             }
-
-        main .try-it .loader {
-            width: 3rem;
-            height: 3rem;
-            position: absolute;
-            top: calc(50% - 1.5rem);
-            left: calc(50% - 1.5rem);
-            visibility: hidden;
-        }
 
     main .info {
         width: 500px;
@@ -68,41 +63,6 @@
             font-size: 14px;
             opacity: 0.85;
             margin: 50px 0 30px 0;
-        }
-
-        main .info .input-file {
-            width: 0.1px;
-            height: 0.1px;
-            opacity: 0;
-            overflow: hidden;
-            position: absolute;
-            z-index: -1;
-        }
-
-        main .info .btn-file {
-            border: 2px solid var(--secondary);
-            margin: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-            main .info .btn-file:hover {
-                border-color: var(--primary);
-            }
-
-            main .info .btn-file:focus, .btn-file.focus {
-                border-color: var(--primary);
-                box-shadow: 0 0 0 0.2rem rgba(173, 181, 189, 0.5);
-            }
-
-            main .info .btn-file .icon-file:before {
-                content: "\f093";
-            }
-
-        main .info .has-file .icon-file:before {
-            content: "\f00c";
-            color: #5aac7b;
         }
 
 footer {
@@ -144,11 +104,54 @@ footer {
         }
 }
 
-.field-validation-error {
+.form-control .invalid {
+    border-color: #dc3545;
+}
+
+.form-control .valid {
+    border-color: #28a745;
+}
+
+.validation-message {
     width: 100%;
     margin-top: 0.25rem;
     font-size: 80%;
-    color: #d9534f;
+    color: #dc3545;
+}
+
+.input-file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.btn-file {
+    border: 2px solid var(--secondary);
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+    .btn-file:hover:not(.disabled) {
+        border-color: var(--primary);
+    }
+
+    .btn-file:focus:not(.disabled), .btn-file.focus:not(.disabled) {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(173, 181, 189, 0.5);
+    }
+
+    .btn-file .icon-file:before {
+        content: "\f093";
+    }
+
+.has-file .icon-file:before {
+    content: "\f00c";
+    color: #5aac7b;
 }
 
 .spinner {
