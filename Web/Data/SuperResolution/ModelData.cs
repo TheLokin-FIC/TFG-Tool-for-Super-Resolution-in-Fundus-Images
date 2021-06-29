@@ -5,8 +5,8 @@ namespace Web.Data.SuperResolution
 {
     public class ModelData
     {
-        public string Name { get; set; }
-        public string Info { get; set; }
+        public string Title { get; set; }
+        public string Subtitle { get; set; }
         public IList<byte> UpscaleFactors { get; set; }
 
         [Required]

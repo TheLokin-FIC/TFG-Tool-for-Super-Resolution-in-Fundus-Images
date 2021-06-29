@@ -6,65 +6,104 @@
 
 <PageTitle Value="Super Resolution | Fundus AI" />
 
-<div class="try-it">
-    <div class="result-area">
-        @if (modelData.OutputFile != null)
-        {
-            <img src=@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(modelData.OutputFile)) />
-        }
-        else
-        {
-            <i class="fa fa-file-image-o"></i>
-        }
-        @if (modelData.InputFile != null && isLoading)
-        {
-            <svg class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-                <circle class="path-background" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-                <circle class="path-foreground" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
-            </svg>
-        }
-    </div>
-</div>
-
-<div class="info">
-    <h1>@modelData.Name</h1>
-    <h2>@modelData.Info</h2>
-    <p class="description">With super resolution powered by deep learning, you can increase the resolution of your images without losing rich features.</p>
-
-    <EditForm enctype="multipart/form-data" Model="modelData" OnValidSubmit="OnValidFormSubmit">
-        <ServerSideValidator @ref="serverSideValidator" />
-        <DataAnnotationsValidator />
-
-        <div class="form-group">
-            <div class="form-check form-check-inline">
-                <label class="form-check-label">Upscale factor</label>
-            </div>
-            <InputRadioGroup @bind-Value="modelData.UpscaleFactor">
-                @foreach (byte upscaleFactor in modelData.UpscaleFactors)
-                {
-                    string id = $"{upscaleFactor}x";
-                    <div class="form-check form-check-inline">
-                        <InputRadio id="@id" class="form-check-input" Value="upscaleFactor" disabled="@isLoading" />
-                        <label class="form-check-label" for="@id">@id</label>
-                    </div>
-                }
-            </InputRadioGroup>
-        </div>
-        <div class="form-group">
-            <InputFile id="file" class="input-file form-control-file" accept="image/*" disabled="@isLoading" OnChange="OnInputFileChange" />
-            @{
-                string disabled = isLoading ? "disabled" : string.Empty;
-                <label class="btn btn-file btn-block @disabled" for="file">
-                    <i class="icon-file fa"></i>
-                    <span class="js-filename">Choose an image</span>
-                </label>
+<section class="model">
+    <div class="result">
+        <div class="result-area">
+            @if (modelData.OutputFile != null)
+            {
+                <img src=@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(modelData.OutputFile)) />
             }
-            <ValidationMessage For="@(() => modelData.InputFile)" />
+            else
+            {
+                <i class="fa fa-file-image-o"></i>
+            }
+            @if (modelData.InputFile != null && isLoading)
+            {
+                <svg class="spinner" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                    <circle class="path-background" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+                    <circle class="path-foreground" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+                </svg>
+            }
         </div>
-        <button class="btn btn-primary btn-block" type="submit" disabled="@isLoading">Upload</button>
-        <ValidationMessage For="@(() => modelData.OutputFile)" />
-    </EditForm>
-</div>
+    </div>
+
+    <div class="try-it">
+        <h1>@modelData.Title</h1>
+        <h2>@modelData.Subtitle</h2>
+        <p class="description">
+            Most of the images are composed of many pixels. To enlarge an image, instead of simply duplicating the pixels and worsening image quality this implementation uses deep learning to clarify, sharpen and upscale images without losing its content and defining characteristics.
+        </p>
+
+        <EditForm enctype="multipart/form-data" Model="modelData" OnValidSubmit="OnValidFormSubmit">
+            <ServerSideValidator @ref="serverSideValidator" />
+            <DataAnnotationsValidator />
+
+            <div class="form-group">
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">Upscale factor</label>
+                </div>
+                <InputRadioGroup @bind-Value="modelData.UpscaleFactor">
+                    @foreach (byte upscaleFactor in modelData.UpscaleFactors)
+                    {
+                        string id = $"{upscaleFactor}x";
+                        <div class="form-check form-check-inline">
+                            <InputRadio id="@id" class="form-check-input" Value="upscaleFactor" disabled="@isLoading" />
+                            <label class="form-check-label" for="@id">@id</label>
+                        </div>
+                    }
+                </InputRadioGroup>
+            </div>
+            <div class="form-group">
+                <InputFile id="file" class="input-file form-control-file" accept="image/*" disabled="@isLoading" OnChange="OnInputFileChange" />
+                @{
+                    string disabled = isLoading ? "disabled" : string.Empty;
+                    <label class="btn btn-file btn-block @disabled" for="file">
+                        <i class="icon-file fa"></i>
+                        <span class="js-filename">Choose an image</span>
+                    </label>
+                }
+                <ValidationMessage For="@(() => modelData.InputFile)" />
+            </div>
+            <button class="btn btn-primary btn-block" type="submit" disabled="@isLoading">Upload</button>
+            <ValidationMessage For="@(() => modelData.OutputFile)" />
+        </EditForm>
+    </div>
+</section>
+
+<section class="statistics">
+    <div class="inner-content">
+        <p class="text-center">STATISTICS</p>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <span>MSE</span>
+                </div>
+                <div class="col">
+                    <span>1</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <span>PSNR</span>
+                </div>
+                <div class="col">
+                    <span>2</span>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <span>SSIM</span>
+                </div>
+                <div class="col">
+                    <span>3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="slash">
+</section>
 
 @code {
     [Parameter]
@@ -80,20 +119,20 @@
         modelData = new();
 
         await Http.Create($"/api/machine-learning-model/super-resolution/details/{Model}")
-        .OnOk<ModelDetails>((model) =>
-        {
-            isLoading = false;
+            .OnOk<ModelDetails>((model) =>
+            {
+                isLoading = false;
 
-            modelData.Name = model.Name;
-            modelData.Info = model.Info;
-            modelData.UpscaleFactors = model.UpscaleFactors;
-            modelData.UpscaleFactor = model.UpscaleFactors[0];
-        })
-        .OnNotFound(() =>
-        {
-            NavigationManager.NavigateTo("/");
-        })
-        .Get();
+                modelData.Title = model.Name;
+                modelData.Subtitle = model.Info;
+                modelData.UpscaleFactors = model.UpscaleFactors;
+                modelData.UpscaleFactor = model.UpscaleFactors[0];
+            })
+            .OnNotFound(() =>
+            {
+                NavigationManager.NavigateTo("/");
+            })
+            .Get();
     }
 
     private async Task OnInputFileChange(InputFileChangeEventArgs e)
@@ -120,24 +159,24 @@
         await JSRuntime.InvokeVoidAsync("ResetInputFile", "Choose an image");
 
         await Http.Create("/api/machine-learning-model/super-resolution/upscale-image")
-        .OnCreated<byte[]>((image) =>
-        {
-            isLoading = false;
+            .OnCreated<byte[]>((image) =>
+            {
+                isLoading = false;
 
-            modelData.InputFile = null;
-            modelData.OutputFile = image;
-        })
-        .OnInternalServerError(() =>
-        {
-            isLoading = false;
+                modelData.InputFile = null;
+                modelData.OutputFile = image;
+            })
+            .OnInternalServerError(() =>
+            {
+                isLoading = false;
 
-            serverSideValidator.DisplayError(nameof(modelData.OutputFile), "An error occurred on the server while processing the image.");
-        })
-        .Post(new ResolutionData()
-        {
-            ModelId = Model,
-            UpscaleFactor = modelData.UpscaleFactor,
-            Image = modelData.InputFile
-        });
+                serverSideValidator.DisplayError(nameof(modelData.OutputFile), "An error occurred on the server while processing the image.");
+            })
+            .Post(new ResolutionData()
+            {
+                ModelId = Model,
+                UpscaleFactor = modelData.UpscaleFactor,
+                Image = modelData.InputFile
+            });
     }
 }

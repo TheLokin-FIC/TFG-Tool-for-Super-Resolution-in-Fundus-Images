@@ -1,7 +1,103 @@
-﻿@page "/"
+﻿@page "/{Page?}"
 
 <PageTitle Value="The front page of AI | Fundus AI" />
 
-<NavLink href="/machine-learning-model/super-resolution/1">Super Resolution SRResNet MSE</NavLink>
-<NavLink href="/machine-learning-model/super-resolution/2">Super Resolution SRGAN MSE</NavLink>
-<NavLink href="/machine-learning-model/super-resolution/3">Super Resolution SRResNet SSIM</NavLink>
+<section class="home">
+    <div class="title">
+        <img src="/images/code.png" />
+        <h1 class="align-middle">Build with AI</h1>
+        <p class="font-weight-bold">Add cutting-edge functionality<br />to your apps with machine learning</p>
+    </div>
+</section>
+
+<section class="search">
+    <div class="main-content">
+        <div class="container">
+            <div class="row d-block">
+                <div class="form-group has-search">
+                    <span class="fa fa-search form-control-feedback"></span>
+                    <input class="form-control" type="search" @bind-value="searchText" @bind-value:event="oninput" placeholder="Search">
+                </div>
+            </div>
+            <div class="row d-block mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <NavLink href="/machine-learning-model/super-resolution/1">Super Resolution</NavLink>
+                        </h5>
+                        <h6 class="card-subtitle text-muted">SRResNet MSE</h6>
+                        <p class="card-text">Clarify images and enhance resolution without feature loss with super resolution powered by an SRResNet architecture and MSE loss.</p>
+                        <p class="card-text text-right">
+                            <small class="text-muted text-right">17/02/2021</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row d-block mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <NavLink href="/machine-learning-model/super-resolution/2">Super Resolution</NavLink>
+                        </h5>
+                        <h6 class="card-subtitle text-muted">SRGAN MSE</h6>
+                        <p class="card-text">Clarify images and enhance resolution without feature loss with super resolution powered by an SRGAN architecture and MSE loss.</p>
+                        <p class="card-text text-right">
+                            <small class="text-muted text-right">17/02/2021</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="row d-block mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <NavLink href="/machine-learning-model/super-resolution/3">Super Resolution</NavLink>
+                        </h5>
+                        <h6 class="card-subtitle text-muted">SRResNet SSIM</h6>
+                        <p class="card-text">Clarify images and enhance resolution without feature loss with super resolution powered by an SRResNet architecture and SSIM loss.</p>
+                        <p class="card-text text-right">
+                            <small class="text-muted text-right">17/02/2021</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link">&laquo;</a>
+                </li>
+                <li class="page-item active">
+                    <NavLink class="page-link" href="">@Page</NavLink>
+                </li>
+                <li class="page-item">
+                    <NavLink class="page-link" href="">&raquo;</NavLink>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
+
+@code{
+    [Parameter]
+    public string Page { get; set; }
+
+    private string searchText;
+
+    @*protected override async Task OnInitializedAsync()
+        {
+            Page = Page ?? "1";
+        }*@
+
+    protected override void OnInitialized()
+    {
+        Page = Page ?? "1";
+    }
+
+    @*public async override Task SetParametersAsync(ParameterView parameters)
+        {
+            await base.SetParametersAsync(parameters);
+            CurrentCount = CurrentCount ?? 1;
+        }*@
+}
