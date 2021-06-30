@@ -18,6 +18,14 @@ namespace Repository.Persistence.Configuration
             builder.Property(machineLearningModel => machineLearningModel.Loss)
                 .IsRequired()
                 .HasMaxLength(16);
+            builder.Property(machineLearningModel => machineLearningModel.ShortDescription)
+                .IsRequired()
+                .HasMaxLength(140);
+            builder.Property(machineLearningModel => machineLearningModel.LongDescription)
+               .IsRequired()
+               .HasMaxLength(280);
+            builder.Property(machineLearningModel => machineLearningModel.CreationDate)
+                .IsRequired();
         }
     }
 }

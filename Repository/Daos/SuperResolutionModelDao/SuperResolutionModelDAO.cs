@@ -19,8 +19,9 @@ namespace Repository.DAOs.SuperResolutionModelDAO
             {
                 DbSet<SuperResolutionModel> superResolutionModelContext = context.Set<SuperResolutionModel>();
 
-                return superResolutionModelContext.Where(superResolutionModel => superResolutionModel.ModelId == modelId)
-                    .OrderBy(superResolutionModelContext => superResolutionModelContext.UpscaleFactor)
+                return superResolutionModelContext
+                    .Where(x => x.ModelId == modelId)
+                    .OrderBy(x => x.UpscaleFactor)
                     .ToList();
             }, typeof(SuperResolutionModel));
         }

@@ -80,6 +80,20 @@ namespace Web.Services.Http
             return this;
         }
 
+        public IHttpRequestBuilder OnBadRequest(Action todo)
+        {
+            responses.Add(HttpStatusCode.BadRequest, OnResponse(todo));
+
+            return this;
+        }
+
+        public IHttpRequestBuilder OnBadRequest<T>(Action<T> todo)
+        {
+            responses.Add(HttpStatusCode.BadRequest, OnResponse(todo));
+
+            return this;
+        }
+
         public IHttpRequestBuilder OnNotFound(Action todo)
         {
             responses.Add(HttpStatusCode.NotFound, OnResponse(todo));

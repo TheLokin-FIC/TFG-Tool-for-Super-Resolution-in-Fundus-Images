@@ -28,7 +28,7 @@ namespace Business.Services.SuperResolutionService
             sessions = new Dictionary<Tuple<int, byte>, InferenceSession>();
         }
 
-        public ModelDetails GetDetails(int modelId)
+        public ResolutionDetails GetDetails(int modelId)
         {
             try
             {
@@ -42,10 +42,11 @@ namespace Business.Services.SuperResolutionService
 
                 if (upscaleFactors.Any())
                 {
-                    return new ModelDetails()
+                    return new ResolutionDetails()
                     {
-                        Name = machineLearningModel.Name,
-                        Info = $"{machineLearningModel.Architecture} {machineLearningModel.Loss}",
+                        Title = machineLearningModel.Name,
+                        Subtitle = $"{machineLearningModel.Architecture} {machineLearningModel.Loss}",
+                        Description = machineLearningModel.LongDescription,
                         UpscaleFactors = upscaleFactors
                     };
                 }
@@ -60,22 +61,26 @@ namespace Business.Services.SuperResolutionService
             }
         }
 
-        public byte[] UpscaleImage(ResolutionData resolutionData)
+        public byte[] UpscaleImage(int modelId, byte upscaleFactor, byte[] image)
         {
             try
             {
-                Tensor<float> tensor = Converter.ConvertByteArrayToFloatTensor(resolutionData.Image);
+                Tensor<float> tensor = Converter.ConvertByteArrayToFloatTensor(image);
                 IReadOnlyCollection<NamedOnnxValue> input = new List<NamedOnnxValue>
                 {
                     NamedOnnxValue.CreateFromTensor("input", tensor)
                 };
 
-                InferenceSession session = GetSession(resolutionData.ModelId, resolutionData.UpscaleFactor);
+                InferenceSession session = GetSession(modelId, upscaleFactor);
                 using IDisposableReadOnlyCollection<DisposableNamedOnnxValue> results = session.Run(input);
 
                 Tensor<float> output = results.First().AsTensor<float>();
 
                 return Converter.ConvertFloatTensorToBitmap(output);
+            }
+            catch (InstanceNotFoundException)
+            {
+                throw new SuperResolutionModelNotFoundException(modelId, upscaleFactor);
             }
             catch (OnnxRuntimeException e)
             {
@@ -83,6 +88,7 @@ namespace Business.Services.SuperResolutionService
             }
         }
 
+        /// <exception cref="InstanceNotFoundException"/>
         private InferenceSession GetSession(int modelId, byte upscaleFactor)
         {
             if (sessions.TryGetValue(Tuple.Create(modelId, upscaleFactor), out InferenceSession session))

@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 
-namespace Repository.DAOs.Collections
+namespace SharedData.Collections
 {
-    public class PageList<E> where E : class
+    public class Page<E> where E : class
     {
         public int PageSize { get; set; }
         public int PageIndex { get; set; }
         public int TotalPages { get; set; }
         public IList<E> Items { get; set; }
-        public bool HasPreviousPage => PageIndex > 0;
-        public bool HasNextPage => PageIndex + 1 < TotalPages;
+        public bool HasPreviousPage { get; set; }
+        public bool HasNextPage { get; set; }
     }
 }

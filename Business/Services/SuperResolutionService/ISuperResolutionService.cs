@@ -6,9 +6,10 @@ namespace Business.Services.SuperResolutionService
     public interface ISuperResolutionService
     {
         /// <exception cref="ModelNotFoundException"/>
-        ModelDetails GetDetails(int modelId);
+        ResolutionDetails GetDetails(int modelId);
 
+        /// <exception cref="SuperResolutionModelNotFoundException"/>
         /// <exception cref="InternalErrorException"/>
-        byte[] UpscaleImage(ResolutionData resolutionData);
+        byte[] UpscaleImage(int modelId, byte upscaleFactor, byte[] image);
     }
 }

@@ -262,20 +262,6 @@ footer {
     color: #dc3545;
 }
 
-.has-search .form-control {
-    padding-left: 2.375rem;
-}
-
-.has-search .form-control-feedback {
-    position: absolute;
-    width: 2.375rem;
-    height: 2.375rem;
-    line-height: 2.45rem;
-    text-align: center;
-    pointer-events: none;
-    color: #aaa;
-}
-
 .input-file {
     width: 0.1px;
     height: 0.1px;

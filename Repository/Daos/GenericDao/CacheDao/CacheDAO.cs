@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Repository.DAOs.Collections;
 using System;
 using System.Linq;
 
@@ -50,14 +49,6 @@ namespace Repository.DAOs.GenericDAO.CacheDAO
             return FromCache($"{typeof(E).Name}GetAll", () =>
             {
                 return base.GetAll();
-            }, typeof(E));
-        }
-
-        public override IPageList<E> GetPagedList(int pageSize, int pageIndex, Func<E, E> orderBy, Func<E, bool> predicate = null)
-        {
-            return FromCache($"{typeof(E).Name}GetPagedList={pageSize},{pageIndex},{orderBy},{predicate}", () =>
-            {
-                return base.GetPagedList(pageSize, pageIndex, orderBy, predicate);
             }, typeof(E));
         }
 

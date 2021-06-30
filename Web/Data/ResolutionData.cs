@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Web.Data.SuperResolution
+namespace Web.Data
 {
-    public class ModelData
+    public class ResolutionData
     {
         public string Title { get; set; }
         public string Subtitle { get; set; }
+        public string Description { get; set; }
         public IList<byte> UpscaleFactors { get; set; }
 
         [Required]
@@ -17,7 +18,7 @@ namespace Web.Data.SuperResolution
 
         public byte[] OutputFile { get; set; }
 
-        public ModelData()
+        public ResolutionData()
         {
             UpscaleFactors = new List<byte>();
         }

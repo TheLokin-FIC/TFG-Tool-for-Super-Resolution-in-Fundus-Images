@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repository.Persistence.Models;
+using System;
 using System.IO;
 
 namespace Repository.Persistence.Extensions
@@ -14,21 +15,30 @@ namespace Repository.Persistence.Extensions
                     Id = 1,
                     Name = "Super Resolution",
                     Architecture = "SRResNet",
-                    Loss = "MSE"
+                    Loss = "MSE",
+                    ShortDescription = "Clarify images and enhance resolution without feature loss with super resolution powered by an SRResNet architecture and MSE loss.",
+                    LongDescription = "Most of the images are composed of many pixels. To enlarge an image, instead of simply duplicating the pixels and worsening image quality this implementation uses deep learning to clarify, sharpen and upscale images without losing its content and defining characteristics.",
+                    CreationDate = new DateTime(2021, 6, 30)
                 },
                 new MachineLearningModel
                 {
                     Id = 2,
                     Name = "Super Resolution",
                     Architecture = "SRGAN",
-                    Loss = "MSE"
+                    Loss = "MSE",
+                    ShortDescription = "Clarify images and enhance resolution without feature loss with super resolution powered by an SRGAN architecture and MSE loss.",
+                    LongDescription = "Most of the images are composed of many pixels. To enlarge an image, instead of simply duplicating the pixels and worsening image quality this implementation uses deep learning to clarify, sharpen and upscale images without losing its content and defining characteristics.",
+                    CreationDate = new DateTime(2021, 6, 30)
                 },
                 new MachineLearningModel
                 {
                     Id = 3,
                     Name = "Super Resolution",
                     Architecture = "SRResNet",
-                    Loss = "SSIM"
+                    Loss = "SSIM",
+                    ShortDescription = "Clarify images and enhance resolution without feature loss with super resolution powered by an SRResNet architecture and SSIM loss.",
+                    LongDescription = "Most of the images are composed of many pixels. To enlarge an image, instead of simply duplicating the pixels and worsening image quality this implementation uses deep learning to clarify, sharpen and upscale images without losing its content and defining characteristics.",
+                    CreationDate = new DateTime(2021, 6, 30)
                 }
             );
             builder.Entity<SuperResolutionModel>().HasData(

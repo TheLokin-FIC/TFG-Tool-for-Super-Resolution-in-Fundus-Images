@@ -21,6 +21,10 @@ namespace Web.Services.Http
 
         IHttpRequestBuilder OnCreated<T>(Action<T> todo);
 
+        IHttpRequestBuilder OnBadRequest(Action todo);
+
+        IHttpRequestBuilder OnBadRequest<T>(Action<T> todo);
+
         IHttpRequestBuilder OnNotFound(Action todo);
 
         IHttpRequestBuilder OnNotFound<T>(Action<T> todo);
