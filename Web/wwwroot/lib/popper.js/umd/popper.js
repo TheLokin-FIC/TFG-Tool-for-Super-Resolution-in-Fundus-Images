@@ -1354,9 +1354,9 @@
             x: distance,
             y: skidding
         } : {
-                x: skidding,
-                y: distance
-            };
+            x: skidding,
+            y: distance
+        };
     }
 
     function offset(_ref2) {

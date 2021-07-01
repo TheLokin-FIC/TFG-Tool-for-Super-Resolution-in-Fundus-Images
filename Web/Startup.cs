@@ -1,15 +1,12 @@
-﻿using BundlerMinifier.TagHelpers;
+using BundlerMinifier.TagHelpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Model.Persistence.Daos.SuperResolutionModelDao;
-using Model.Persistence.Data;
-using Model.Services.SuperResolutionService;
-using Web.Utils;
+using Microsoft.Extensions.Hosting;
+using System;
+using Web.Services.Http;
+using Westwind.AspNetCore.LiveReload;
 
 namespace Web
 {
@@ -24,29 +21,26 @@ namespace Web
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-               options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
-            );
-
-            services.AddScoped<ISuperResolutionModelDao, SuperResolutionModelDaoCacheEntityFramework>();
-            services.AddScoped<ISuperResolutionService, SuperResolutionService>();
+            services.AddHttpClient("api", httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(Configuration.GetValue<string>("api"));
+            });
+            services.AddScoped<IHttpRequestBuilderFactory, HttpRequestBuilderFactory>();
 
             services.AddBundles(options =>
             {
                 options.AppendVersion = true;
             });
-
-            services.AddMvc().AddRazorPagesOptions(options =>
-            {
-                options.Conventions.Add(new PageRouteTransformerConvention(new SlugifyParameterTransformer()));
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddLiveReload();
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
+                app.UseLiveReload();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -55,9 +49,14 @@ namespace Web
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseHttpsRedirection();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");
+            });
         }
     }
 }
