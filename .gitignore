@@ -353,4 +353,4 @@ MigrationBackup/
 **/wwwroot/bundles
 
 # Don't include appsettings file in git
-**/appsettings.json
+**/appsettings*.json

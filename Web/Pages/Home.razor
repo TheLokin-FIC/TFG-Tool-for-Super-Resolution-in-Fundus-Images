@@ -1,0 +1,132 @@
+﻿@page "/{PageIndex:int?}"
+
+@using DataTransfer.Output.Collections
+@using DataTransfer.Output.MachineLearning
+@using Web.Components.Data.Home
+
+@inject IHttpRequestBuilderFactory Http
+
+<PageTitle Value="The front page of AI | Fundus AI" />
+
+<section class="home">
+    <div class="title">
+        <img src="/images/code.png" />
+        <h1 class="align-middle">Build with AI</h1>
+        <p class="font-weight-bold">Cutting-edge functionality<br />with machine and deep learning</p>
+    </div>
+</section>
+
+<section class="search">
+    <div class="main-content">
+        <div class="container">
+            <div class="row d-block">
+                <EditForm Model="homeData" OnValidSubmit="OnValidFormSubmit">
+                    <div class="input-group mb-3">
+                        <InputText class="form-control" type="search" placeholder="Search" @bind-Value="homeData.SearchTerm" />
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </EditForm>
+            </div>
+            @if (pageDetails.Items.Any())
+            {
+                foreach (ModelDetails model in pageDetails.Items)
+                {
+                    <div class="row d-block mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <NavLink href=@string.Concat("/machine-learning-model/super-resolution/", model.Id)>@model.Category</NavLink>
+                                </h5>
+                                <h6 class="card-subtitle text-muted">@model.Title</h6>
+                                <p class="card-text">@model.Description</p>
+                                <p class="card-text text-muted text-right">
+                                    @model.Date.ToShortDateString()
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="row d-block mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">
+                                No models found for "@homeData.SearchTerm"
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <nav>
+            <ul class="pagination justify-content-center">
+                @{
+                    string disabled;
+                    disabled = pageDetails.HasPreviousPage ? string.Empty : "disabled";
+                    <li class="page-item @disabled">
+                        <NavLink class="page-link" href=@string.Concat("/", pageDetails.PageIndex - 1)>&laquo;</NavLink>
+                    </li>
+                    <li class="page-item active">
+                        <NavLink class="page-link" href=@string.Concat("/", pageDetails.PageIndex)>@(pageDetails.PageIndex)</NavLink>
+                    </li>
+                    disabled = pageDetails.HasNextPage ? string.Empty : "disabled";
+                    <li class="page-item @disabled">
+                        <NavLink class="page-link" href=@string.Concat("/", pageDetails.PageIndex + 1)>&raquo;</NavLink>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
+</section>
+
+@code{
+    [Parameter]
+    public int? PageIndex { get; set; }
+    private Page<ModelDetails> pageDetails = new()
+    {
+        PageSize = 3,
+        PageIndex = 1,
+        Items = new List<ModelDetails>()
+    };
+    private HomeData homeData = new()
+    {
+        SearchTerm = ""
+    };
+
+    protected override async Task OnParametersSetAsync()
+    {
+        pageDetails.PageIndex = PageIndex ?? pageDetails.PageIndex;
+
+        await Http.Create($"/api/machine-learning-model/models/{pageDetails.PageSize}/{pageDetails.PageIndex}?searchTerm={homeData.SearchTerm}")
+            .OnOk<Page<ModelDetails>>((page) =>
+            {
+                pageDetails = page;
+            })
+            .OnBadRequest(() =>
+            {
+                pageDetails.PageIndex = 1;
+            })
+            .Get();
+    }
+
+    private async Task OnValidFormSubmit()
+    {
+        await Http.Create($"/api/machine-learning-model/models/{pageDetails.PageSize}/1?searchTerm={homeData.SearchTerm}")
+            .OnOk<Page<ModelDetails>>((page) =>
+            {
+                pageDetails = page;
+            })
+            .OnBadRequest(() =>
+            {
+                pageDetails.PageIndex = 1;
+            })
+            .Get();
+    }
+}
