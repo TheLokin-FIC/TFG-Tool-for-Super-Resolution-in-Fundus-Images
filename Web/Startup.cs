@@ -1,3 +1,6 @@
+using BlazorDownloadFile;
+using Blazorise;
+using Blazorise.Bootstrap;
 using BundlerMinifier.TagHelpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -5,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
-using Web.Services.Http;
+using Web.Components.Http;
 using Westwind.AspNetCore.LiveReload;
 
 namespace Web
@@ -27,6 +30,14 @@ namespace Web
             });
             services.AddScoped<IHttpRequestBuilderFactory, HttpRequestBuilderFactory>();
 
+            services.AddBlazorise(options =>
+            {
+                options.ChangeTextOnKeyPress = true;
+                options.DelayTextOnKeyPress = true;
+                options.DelayTextOnKeyPressInterval = 300;
+            });
+            services.AddBootstrapProviders();
+            services.AddBlazorDownloadFile();
             services.AddBundles(options =>
             {
                 options.AppendVersion = true;

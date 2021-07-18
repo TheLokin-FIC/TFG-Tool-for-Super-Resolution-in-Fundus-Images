@@ -1,5 +1,4 @@
 using Business.Services.MachineLearningService;
-using Business.Services.SuperResolutionService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +33,6 @@ namespace Server
             services.AddScoped<IMachineLearningModelDAO, MachineLearningModelDAO>();
             services.AddScoped<ISuperResolutionModelDAO, SuperResolutionModelDAO>();
             services.AddScoped<IMachineLearningService, MachineLearningService>();
-            services.AddScoped<ISuperResolutionService, SuperResolutionService>();
 
             services.AddLiveReload();
             services.AddControllers();

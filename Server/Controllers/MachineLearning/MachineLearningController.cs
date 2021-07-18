@@ -1,8 +1,9 @@
 ﻿using Business.Exceptions;
 using Business.Services.MachineLearningService;
-using Business.Services.SuperResolutionService;
+using DataTransfer.Output.MachineLearning.SuperResolution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 
 namespace Server.Controllers.MachineLearning
 {
@@ -11,23 +12,37 @@ namespace Server.Controllers.MachineLearning
     public class MachineLearningController : Controller
     {
         private readonly IMachineLearningService machineLearningService;
-        private readonly ISuperResolutionService superResolutionService;
 
-        public MachineLearningController(IMachineLearningService machineLearningService, ISuperResolutionService superResolutionService)
+        public MachineLearningController(IMachineLearningService machineLearningService)
         {
             this.machineLearningService = machineLearningService;
-            this.superResolutionService = superResolutionService;
         }
 
         [HttpGet]
-        [Route("{model}/super-resolution/details")]
+        [Route("models/{size}/{index}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Details(int model)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult GetModelPage(int size, int index, string searchTerm)
         {
             try
             {
-                return StatusCode(StatusCodes.Status200OK, superResolutionService.GetDetails(model));
+                return StatusCode(StatusCodes.Status200OK, machineLearningService.GetModelPage(size, index, searchTerm));
+            }
+            catch (PageException)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+        }
+
+        [HttpGet]
+        [Route("super-resolution/details/{model}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetResolutionModelDetails(int model)
+        {
+            try
+            {
+                return StatusCode(StatusCodes.Status200OK, machineLearningService.GetResolutionModelDetails(model));
             }
             catch (ModelNotFoundException)
             {
@@ -36,15 +51,15 @@ namespace Server.Controllers.MachineLearning
         }
 
         [HttpPost]
-        [Route("{model}/super-resolution/upscale/{factor}")]
+        [Route("super-resolution/upscale/{model}/{factor}")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult Upscale(int model, byte factor, byte[] image)
+        public IActionResult UpscaleImage(int model, byte factor, byte[] image)
         {
             try
             {
-                return StatusCode(StatusCodes.Status201Created, superResolutionService.UpscaleImage(model, factor, image));
+                return StatusCode(StatusCodes.Status201Created, machineLearningService.UpscaleImage(model, factor, image));
             }
             catch (SuperResolutionModelNotFoundException)
             {
@@ -56,19 +71,29 @@ namespace Server.Controllers.MachineLearning
             }
         }
 
-        [HttpGet]
-        [Route("page/{size}/{index}/{search?}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [HttpPost]
+        [Route("super-resolution/metrics/{model}/{factor}")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Page(int size, int index, string search = "")
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult GenerateDatasetMetrics(int model, byte factor, IList<byte[]> dataset)
         {
             try
             {
-                return StatusCode(StatusCodes.Status200OK, machineLearningService.GetPage(size, index, search));
+                return StatusCode(StatusCodes.Status201Created, machineLearningService.GenerateDatasetMetrics(model, factor, dataset));
             }
-            catch (PageException)
+            catch (EmptyDatasetException)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
+            }
+            catch (SuperResolutionModelNotFoundException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (InternalErrorException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
     }

@@ -7,12 +7,25 @@ namespace Business.Utils
 {
     public static class Converter
     {
-        public static Tensor<float> ConvertByteArrayToFloatTensor(byte[] bytes)
+        public static Bitmap ConvertByteArrayToBitmap(byte[] bytes)
         {
             // Converts the byte array to a bitmap
             using MemoryStream stream = new(bytes);
-            Bitmap bitmap = new(stream);
 
+            return new Bitmap(stream);
+        }
+
+        public static byte[] ConvertBitmapToByteArray(Bitmap bitmap)
+        {
+            // Converts the bitmap to a byte array
+            using MemoryStream stream = new();
+            bitmap.Save(stream, ImageFormat.Jpeg);
+
+            return stream.ToArray();
+        }
+
+        public static Tensor<float> ConvertBitmapToFloatTensor(Bitmap bitmap)
+        {
             // Create a tensor with the appropiate dimensions
             Tensor<float> tensor = new DenseTensor<float>(new[] { 1, 3, bitmap.Height, bitmap.Width });
 
@@ -32,7 +45,7 @@ namespace Business.Utils
             return tensor;
         }
 
-        public static byte[] ConvertFloatTensorToBitmap(Tensor<float> tensor)
+        public static Bitmap ConvertFloatTensorToBitmap(Tensor<float> tensor)
         {
             int[] dimensions = tensor.Dimensions.ToArray();
             int height = dimensions[2];
@@ -52,11 +65,25 @@ namespace Business.Utils
                 }
             }
 
-            // Converts the bitmap to a byte array
-            using MemoryStream stream = new();
-            bitmap.Save(stream, ImageFormat.Jpeg);
+            return bitmap;
+        }
 
-            return stream.ToArray();
+        public static Tensor<float> ConvertByteArrayToFloatTensor(byte[] bytes)
+        {
+            // Converts the byte array to a bitmap
+            Bitmap bitmap = ConvertByteArrayToBitmap(bytes);
+
+            // Converts the bitmap to a float tensor and returns it
+            return ConvertBitmapToFloatTensor(bitmap);
+        }
+
+        public static byte[] ConvertFloatTensorToByteArray(Tensor<float> tensor)
+        {
+            // Converts the float tensor to a bitmap
+            Bitmap bitmap = ConvertFloatTensorToBitmap(tensor);
+
+            // Converts the bitmap to a byte array and returns it
+            return ConvertBitmapToByteArray(bitmap);
         }
     }
 }

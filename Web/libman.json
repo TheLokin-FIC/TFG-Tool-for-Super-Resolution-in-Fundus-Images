@@ -3,36 +3,6 @@
   "defaultProvider": "cdnjs",
   "libraries": [
     {
-      "library": "bootswatch@4.6.0",
-      "destination": "wwwroot/lib/bootswatch/",
-      "files": [
-        "litera/bootstrap.css"
-      ]
-    },
-    {
-      "library": "jquery@3.6.0",
-      "destination": "wwwroot/lib/jquery/",
-      "files": [
-        "jquery.js"
-      ]
-    },
-    {
-      "library": "popper.js@2.9.2",
-      "destination": "wwwroot/lib/popper.js/",
-      "files": [
-        "umd/popper.js",
-        "umd/popper.js.map"
-      ]
-    },
-    {
-      "library": "twitter-bootstrap@4.6.0",
-      "destination": "wwwroot/lib/twitter-bootstrap/",
-      "files": [
-        "js/bootstrap.js",
-        "js/bootstrap.js.map"
-      ]
-    },
-    {
       "library": "font-awesome@4.7.0",
       "destination": "wwwroot/lib/font-awesome/",
       "files": [

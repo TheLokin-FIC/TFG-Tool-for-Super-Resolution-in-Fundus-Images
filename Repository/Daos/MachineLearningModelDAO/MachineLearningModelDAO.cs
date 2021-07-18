@@ -16,6 +16,19 @@ namespace Repository.DAOs.MachineLearningModelDAO
         {
         }
 
+        public IList<MachineLearningModel> FindByName(string name)
+        {
+            return FromCache($"{typeof(MachineLearningModel).Name}FindByName={name}", () =>
+            {
+                DbSet<MachineLearningModel> machineLearningModelContext = context.Set<MachineLearningModel>();
+
+                return machineLearningModelContext
+                    .Where(x => x.Name == name)
+                    .OrderBy(x => x.Id)
+                    .ToList();
+            }, typeof(MachineLearningModel));
+        }
+
         public PageList<MachineLearningModel> FindPageByTerm(int pageSize, int pageIndex, string searchTerm)
         {
             return FromCache($"{typeof(MachineLearningModel).Name}FindPageByTerm={pageSize},{pageIndex},{searchTerm}", () =>

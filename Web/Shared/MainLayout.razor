@@ -1,13 +1,33 @@
 ﻿@inherits LayoutComponentBase
 
-<header>
-    <NavMenu />
-</header>
-
-<main>
-    @Body
-</main>
-
-<footer>
-    <p>&copy; 2021 - Fundus AI</p>
-</footer>
+<Layout>
+    <LayoutHeader>
+        <Bar Breakpoint="Breakpoint.Desktop" Background="Background.Light" ThemeContrast="ThemeContrast.Light">
+            <BarBrand>
+                <BarItem>
+                    <BarItem>
+                        <BarLink Class="navbar-brand font-weight-bold" To="/">
+                            <img src="/images/logo.png" />
+                            <span class="align-middle">Fundus AI</span>
+                        </BarLink>
+                    </BarItem>
+                </BarItem>
+            </BarBrand>
+            <BarToggler />
+            <BarMenu>
+                <BarEnd>
+                    <BarItem>
+                        <Button Color="Color.Primary">Sign up</Button>
+                        <Button Color="Color.Secondary">Log in</Button>
+                    </BarItem>
+                </BarEnd>
+            </BarMenu>
+        </Bar>
+    </LayoutHeader>
+    <LayoutContent>
+        @Body
+    </LayoutContent>
+    <LayoutFooter>
+        <p>&copy; 2021 - Fundus AI</p>
+    </LayoutFooter>
+</Layout>

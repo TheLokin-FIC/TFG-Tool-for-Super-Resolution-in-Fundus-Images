@@ -6,13 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.8.0" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime" Version="1.8.1" />
+    <PackageReference Include="OpenCvSharp4.Windows" Version="4.5.2.20210404" />
+    <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.5.2.20210404" />
     <PackageReference Include="System.Drawing.Common" Version="5.0.2" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DataTransfer\DataTransfer.csproj" />
     <ProjectReference Include="..\Repository\Repository.csproj" />
-    <ProjectReference Include="..\SharedData\SharedData.csproj" />
   </ItemGroup>
 
   <ItemGroup>
