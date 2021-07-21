@@ -1,6 +1,5 @@
 ﻿using Business.Exceptions;
 using Business.Services.MachineLearningService;
-using DataTransfer.Output.MachineLearning.SuperResolution;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -22,7 +21,7 @@ namespace Server.Controllers.MachineLearning
         [Route("models/{size}/{index}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetModelPage(int size, int index, string searchTerm)
+        public IActionResult GetModelPage([FromRoute] int size, [FromRoute] int index, [FromQuery] string searchTerm)
         {
             try
             {
@@ -38,7 +37,7 @@ namespace Server.Controllers.MachineLearning
         [Route("super-resolution/details/{model}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetResolutionModelDetails(int model)
+        public IActionResult GetResolutionModelDetails([FromRoute] int model)
         {
             try
             {
@@ -55,7 +54,7 @@ namespace Server.Controllers.MachineLearning
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpscaleImage(int model, byte factor, byte[] image)
+        public IActionResult UpscaleImage([FromRoute] int model, [FromRoute] byte factor, [FromBody] byte[] image)
         {
             try
             {
@@ -77,7 +76,7 @@ namespace Server.Controllers.MachineLearning
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult GenerateDatasetMetrics(int model, byte factor, IList<byte[]> dataset)
+        public IActionResult GenerateDatasetMetrics([FromRoute] int model, [FromRoute] byte factor, [FromBody] IList<byte[]> dataset)
         {
             try
             {

@@ -1,0 +1,61 @@
+﻿@page "/account/register"
+
+@using Web.Components.Data.User
+
+@inject IHttpRequestBuilderFactory Http
+@inject IServiceProvider ServiceProvider
+
+<section class="authentication">
+    <div class="h-100">
+        <div class="container h-100">
+            <div class="row justify-content-md-center h-100">
+                <div class="card-wrapper">
+                    <div class="brand">
+                        <img src="/images/logo-secondary.jpg">
+                    </div>
+                    <div class="card fat">
+                        <div class="card-body">
+                            <h4 class="card-title">Register</h4>
+
+                            <EditForm Model="registerData">
+                                <ServerSideValidator @ref="serverValidator" />
+                                <DataAnnotationsValidator />
+                                <div class="form-group">
+                                    <InputText type="text" class="form-control" placeholder="Username" @bind-Value="registerData.Username"></InputText>
+                                    <ValidationMessage For="@(() => registerData.Username)" />
+                                </div>
+                                <div class="form-group">
+                                    <InputText type="password" class="form-control" placeholder="Password" @bind-Value="registerData.Password"></InputText>
+                                    <ValidationMessage For="@(() => registerData.Password)" />
+                                </div>
+                                <div class="form-group">
+                                    <InputText type="password" class="form-control" placeholder="Confirm password" @bind-Value="registerData.ConfirmPassword"></InputText>
+                                    <ValidationMessage For="@(() => registerData.ConfirmPassword)" />
+                                </div>
+                                <button class="btn btn-primary btn-block" type="submit">REGISTER</button>
+                                <div class="d-flex justify-content-center mt-4">
+                                    <p>
+                                        Already have an account?
+                                        <Blazorise.Link To="/account/login">
+                                            Login
+                                        </Blazorise.Link>
+                                    </p>
+                                </div>
+                            </EditForm>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private RegisterData registerData = new();
+    private ServerSideValidator serverValidator;
+
+    private async Task OnValidFormSubmit()
+    {
+        await ServiceProvider.Get<SessionProvider>().LoginAsync(1, "user");
+    }
+}

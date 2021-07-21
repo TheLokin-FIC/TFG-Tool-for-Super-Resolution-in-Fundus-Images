@@ -40,31 +40,34 @@ namespace Repository.DAOs.MachineLearningModelDAO
                     throw new PageSizeException(pageSize);
                 }
 
-                int totalPages = (int)Math.Ceiling((double)machineLearningModelContext.Count() / pageSize);
-                if (pageIndex < 0 || pageIndex >= totalPages)
-                {
-                    throw new PageIndexException(pageIndex, totalPages);
-                }
-
+                int totalPages;
                 IList<MachineLearningModel> items;
                 if (string.IsNullOrWhiteSpace(searchTerm))
                 {
-                    items = machineLearningModelContext
+                    items = machineLearningModelContext.OrderBy(x => x.CreationDate)
                         .Skip(pageSize * pageIndex)
                         .Take(pageSize)
-                        .OrderBy(x => x.CreationDate)
                         .ToList();
+
+                    totalPages = (int)Math.Ceiling((double)machineLearningModelContext.Count() / pageSize);
                 }
                 else
                 {
                     string[] words = searchTerm.ToLower().Split(" ");
-                    items = machineLearningModelContext
-                        .AsEnumerable()
-                        .Where(x => words.Any(w => x.Name.ToLower().Contains(w) || x.Architecture.ToLower().Contains(w) || x.Loss.ToLower().Contains(w)))
+                    IEnumerable<MachineLearningModel> machineLearningModels = machineLearningModelContext.AsEnumerable()
+                        .Where(x => words.Any(w => x.Name.ToLower().Contains(w) || x.Architecture.ToLower().Contains(w) || x.Loss.ToLower().Contains(w)));
+                   
+                    items = machineLearningModels.OrderBy(x => x.CreationDate)
                         .Skip(pageSize * pageIndex)
                         .Take(pageSize)
-                        .OrderBy(x => x.CreationDate)
                         .ToList();
+
+                    totalPages = (int)Math.Ceiling((double)machineLearningModels.Count() / pageSize);
+                }
+
+                if (pageIndex < 0 || pageIndex >= totalPages)
+                {
+                    throw new PageIndexException(pageIndex, totalPages);
                 }
 
                 return new PageList<MachineLearningModel>()

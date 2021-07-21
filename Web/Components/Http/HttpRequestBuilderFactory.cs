@@ -6,9 +6,9 @@ namespace Web.Components.Http
     {
         private readonly HttpClient httpClient;
 
-        public HttpRequestBuilderFactory(IHttpClientFactory httpClient)
+        public HttpRequestBuilderFactory(IHttpClientFactory httpClientFactory)
         {
-            this.httpClient = httpClient.CreateClient("api");
+            httpClient = httpClientFactory.CreateClient("external-api");
         }
 
         public IHttpRequestBuilder Create(string uri)

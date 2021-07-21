@@ -112,6 +112,55 @@ section.search .main-content {
     }
 }
 
+section.authentication .brand {
+    width: 90px;
+    height: 90px;
+    overflow: hidden;
+    border-radius: 50%;
+    margin: 40px auto;
+    box-shadow: 0 4px 8px rgba(0,0,0,.05);
+    position: relative;
+    z-index: 1;
+}
+
+    section.authentication .brand img {
+        width: 100%;
+    }
+
+section.authentication .card-wrapper {
+    width: 400px;
+}
+
+section.authentication .card {
+    border-color: transparent;
+    box-shadow: 0 4px 8px rgba(0,0,0,.05);
+}
+
+    section.authentication .card.fat {
+        padding: 10px;
+    }
+
+    section.authentication .card .card-title {
+        margin-bottom: 30px;
+    }
+
+@media screen and (max-width: 425px) {
+    section.authentication .card-wrapper {
+        width: 90%;
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    section.authentication .card.fat {
+        padding: 0;
+    }
+
+        section.authentication .card.fat .card-body {
+            padding: 15px;
+        }
+}
+
 section.model,
 section.metrics {
     max-width: 1035px;
