@@ -38,7 +38,7 @@ namespace Business.Services.MachineLearningService
             sessions = new Dictionary<Tuple<int, byte>, InferenceSession>();
         }
 
-        public Page<ModelDetails> GetModelPage(int pageSize, int pageIndex, string searchTerm)
+        public Page<ModelDetails> ModelPage(int pageSize, int pageIndex, string searchTerm)
         {
             try
             {
@@ -74,7 +74,7 @@ namespace Business.Services.MachineLearningService
             }
         }
 
-        public ResolutionModelDetails GetResolutionModelDetails(int modelId)
+        public ResolutionModelDetails ResolutionModelDetails(int modelId)
         {
             try
             {
@@ -110,12 +110,12 @@ namespace Business.Services.MachineLearningService
                 }
                 else
                 {
-                    throw new ModelNotFoundException(modelId);
+                    throw new NotFoundException(modelId);
                 }
             }
             catch (InstanceNotFoundException)
             {
-                throw new ModelNotFoundException(modelId);
+                throw new NotFoundException(modelId);
             }
         }
 
@@ -130,7 +130,7 @@ namespace Business.Services.MachineLearningService
             }
             catch (InstanceNotFoundException)
             {
-                throw new SuperResolutionModelNotFoundException(modelId, upscaleFactor);
+                throw new NotFoundException(modelId, upscaleFactor);
             }
             catch (OnnxRuntimeException e)
             {
@@ -212,12 +212,12 @@ namespace Business.Services.MachineLearningService
                 }
                 else
                 {
-                    throw new EmptyDatasetException();
+                    throw new ArgumentException("Dataset can not be empty");
                 }
             }
             catch (InstanceNotFoundException)
             {
-                throw new SuperResolutionModelNotFoundException(modelId, upscaleFactor);
+                throw new NotFoundException(modelId, upscaleFactor);
             }
             catch (OnnxRuntimeException e)
             {

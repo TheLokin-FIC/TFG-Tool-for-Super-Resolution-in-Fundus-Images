@@ -1,4 +1,5 @@
 using Business.Services.MachineLearningService;
+using Business.Services.UserProfileService;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Repository.DAOs.MachineLearningModelDAO;
 using Repository.DAOs.SuperResolutionModelDAO;
+using Repository.DAOs.UserProfileDAO;
 using Repository.Persistence;
 using System;
 using System.IO;
@@ -32,7 +34,9 @@ namespace Server
             );
             services.AddScoped<IMachineLearningModelDAO, MachineLearningModelDAO>();
             services.AddScoped<ISuperResolutionModelDAO, SuperResolutionModelDAO>();
+            services.AddScoped<IUserProfileDAO, UserProfileDAO>();
             services.AddScoped<IMachineLearningService, MachineLearningService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
 
             services.AddLiveReload();
             services.AddControllers();
