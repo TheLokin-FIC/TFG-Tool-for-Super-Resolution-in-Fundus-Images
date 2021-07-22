@@ -1,9 +1,12 @@
 ﻿@page "/account/register"
 
+@using DataTransfer.Input.UserProfile
+@using DataTransfer.Output.UserProfile
 @using Web.Components.Data.User
 
 @inject IHttpRequestBuilderFactory Http
 @inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
 
 <section class="authentication">
     <div class="h-100">
@@ -17,7 +20,7 @@
                         <div class="card-body">
                             <h4 class="card-title">Register</h4>
 
-                            <EditForm Model="registerData">
+                            <EditForm Model="registerData" OnValidSubmit="OnValidFormSubmit">
                                 <ServerSideValidator @ref="serverValidator" />
                                 <DataAnnotationsValidator />
                                 <div class="form-group">
@@ -36,9 +39,18 @@
                                 <div class="d-flex justify-content-center mt-4">
                                     <p>
                                         Already have an account?
-                                        <Blazorise.Link To="/account/login">
-                                            Login
-                                        </Blazorise.Link>
+                                        @if (NavigationManager.TryGetQueryString("returnUrl", out string returnUrl))
+                                        {
+                                            <Blazorise.Link To=@string.Concat("/account/login?returnUrl=", returnUrl)>
+                                                Login
+                                            </Blazorise.Link>
+                                        }
+                                        else
+                                        {
+                                            <Blazorise.Link To="/account/login">
+                                                Login
+                                            </Blazorise.Link>
+                                        }
                                     </p>
                                 </div>
                             </EditForm>
@@ -56,6 +68,28 @@
 
     private async Task OnValidFormSubmit()
     {
-        await ServiceProvider.Get<SessionProvider>().LoginAsync(1, "user");
+        await Http.Create("/api/account/register")
+            .OnCreated<UserDetails>(async (user) =>
+            {
+                await ServiceProvider.Get<SessionProvider>().LoginAsync(user.Id, user.Role);
+
+                if (NavigationManager.TryGetQueryString("returnUrl", out string returnUrl))
+                {
+                    NavigationManager.NavigateTo(returnUrl);
+                }
+                else
+                {
+                    NavigationManager.NavigateTo("/");
+                }
+            })
+            .OnBadRequest(() =>
+            {
+                serverValidator.DisplayError(nameof(registerData.Username), "That username is already in use, try another.");
+            })
+            .Post(new UserRegister()
+            {
+                Username = registerData.Username,
+                Password = registerData.Password
+            });
     }
 }

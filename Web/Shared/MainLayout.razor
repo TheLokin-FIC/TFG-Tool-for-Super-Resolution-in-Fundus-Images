@@ -23,11 +23,11 @@
                         <AuthorizeView>
                             <Authorized>
                                 <Button Color="Color.Secondary" Clicked="(() => ServiceProvider.Get<SessionProvider>().LogoutAsync())">LOGOUT</Button>
-                                <Button Color="Color.Primary">PROFILE</Button>
+                                <Button Color="Color.Primary" Clicked='(() => NavigationManager.NavigateTo("/account/profile"))'>PROFILE</Button>
                             </Authorized>
                             <NotAuthorized>
-                                <Button Color="Color.Secondary" Clicked='(() => NavigationManager.NavigateTo("/account/login"))'>LOGIN</Button>
-                                <Button Color="Color.Primary" Clicked='(() => NavigationManager.NavigateTo("/account/register"))'>REGISTER</Button>
+                                <Button Color="Color.Secondary" Clicked='(() => NavigationManager.NavigateToAndReturn("/account/login"))'>LOGIN</Button>
+                                <Button Color="Color.Primary" Clicked='(() => NavigationManager.NavigateToAndReturn("/account/register"))'>REGISTER</Button>
                             </NotAuthorized>
                         </AuthorizeView>
                     </BarItem>

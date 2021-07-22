@@ -2,9 +2,10 @@
 using Business.Services.MachineLearningService;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
-namespace Server.Controllers.MachineLearning
+namespace Server.Controllers.MachineLearningController
 {
     [ApiController]
     [Route("api/machine-learning-model")]
@@ -18,14 +19,14 @@ namespace Server.Controllers.MachineLearning
         }
 
         [HttpGet]
-        [Route("models/{size}/{index}")]
+        [Route("models")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetModelPage([FromRoute] int size, [FromRoute] int index, [FromQuery] string searchTerm)
+        public IActionResult ModelPage([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string searchTerm)
         {
             try
             {
-                return StatusCode(StatusCodes.Status200OK, machineLearningService.GetModelPage(size, index, searchTerm));
+                return StatusCode(StatusCodes.Status200OK, machineLearningService.ModelPage(pageSize, pageIndex, searchTerm));
             }
             catch (PageException)
             {
@@ -37,13 +38,13 @@ namespace Server.Controllers.MachineLearning
         [Route("super-resolution/details/{model}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetResolutionModelDetails([FromRoute] int model)
+        public IActionResult ResolutionModelDetails([FromRoute] int model)
         {
             try
             {
-                return StatusCode(StatusCodes.Status200OK, machineLearningService.GetResolutionModelDetails(model));
+                return StatusCode(StatusCodes.Status200OK, machineLearningService.ResolutionModelDetails(model));
             }
-            catch (ModelNotFoundException)
+            catch (NotFoundException)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
@@ -60,7 +61,7 @@ namespace Server.Controllers.MachineLearning
             {
                 return StatusCode(StatusCodes.Status201Created, machineLearningService.UpscaleImage(model, factor, image));
             }
-            catch (SuperResolutionModelNotFoundException)
+            catch (NotFoundException)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }
@@ -82,11 +83,11 @@ namespace Server.Controllers.MachineLearning
             {
                 return StatusCode(StatusCodes.Status201Created, machineLearningService.GenerateDatasetMetrics(model, factor, dataset));
             }
-            catch (EmptyDatasetException)
+            catch (ArgumentException)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
-            catch (SuperResolutionModelNotFoundException)
+            catch (NotFoundException)
             {
                 return StatusCode(StatusCodes.Status404NotFound);
             }

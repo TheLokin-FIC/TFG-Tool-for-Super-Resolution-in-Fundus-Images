@@ -94,6 +94,20 @@ namespace Web.Components.Http
             return this;
         }
 
+        public IHttpRequestBuilder OnUnauthorized(Action todo)
+        {
+            responses.Add(HttpStatusCode.Unauthorized, OnResponse(todo));
+
+            return this;
+        }
+
+        public IHttpRequestBuilder OnUnauthorized<T>(Action<T> todo)
+        {
+            responses.Add(HttpStatusCode.Unauthorized, OnResponse(todo));
+
+            return this;
+        }
+
         public IHttpRequestBuilder OnNotFound(Action todo)
         {
             responses.Add(HttpStatusCode.NotFound, OnResponse(todo));

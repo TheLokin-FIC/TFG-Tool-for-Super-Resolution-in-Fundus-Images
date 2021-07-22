@@ -108,9 +108,9 @@
         await ChangePage(1);
     }
 
-    private async Task ChangePage(int page)
+    private async Task ChangePage(int pageIndex)
     {
-        await Http.Create($"/api/machine-learning-model/models/{pageDetails.PageSize}/1?searchTerm={homeData.SearchTerm}")
+        await Http.Create($"/api/machine-learning-model/models?pageSize={pageDetails.PageSize}&pageIndex={pageIndex}&searchTerm={homeData.SearchTerm}")
             .OnOk<Page<ModelDetails>>((page) =>
             {
                 pageDetails = page;

@@ -6,9 +6,9 @@ namespace Web.Components.Extensions
 {
     public static class NavigationManagerExtension
     {
-        public static bool TryGetQueryString<T>(this NavigationManager navManager, string key, out T value)
+        public static bool TryGetQueryString<T>(this NavigationManager navigationManager, string key, out T value)
         {
-            Uri uri = navManager.ToAbsoluteUri(navManager.Uri);
+            Uri uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
 
             if (QueryHelpers.ParseQuery(uri.Query).TryGetValue(key, out var valueFromQueryString))
             {
@@ -37,6 +37,18 @@ namespace Web.Components.Extensions
             value = default;
 
             return false;
+        }
+
+        public static void NavigateToAndReturn(this NavigationManager navigationManager, string uri, bool forceLoad = false)
+        {
+            if (navigationManager.TryGetQueryString("returnUrl", out string returnUrl))
+            {
+                navigationManager.NavigateTo(string.Concat(uri, "?returnUrl=", returnUrl), forceLoad);
+            }
+            else
+            {
+                navigationManager.NavigateTo(uri, forceLoad);
+            }
         }
     }
 }

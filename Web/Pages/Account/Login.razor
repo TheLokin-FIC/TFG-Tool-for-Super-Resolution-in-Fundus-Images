@@ -1,5 +1,7 @@
 ﻿@page "/account/login"
 
+@using DataTransfer.Input.UserProfile
+@using DataTransfer.Output.UserProfile
 @using Web.Components.Data.User
 
 @inject IHttpRequestBuilderFactory Http
@@ -33,9 +35,18 @@
                                 <div class="d-flex justify-content-center mt-4">
                                     <p>
                                         Don't have an account?
-                                        <Blazorise.Link To="/account/register">
-                                            Create one
-                                        </Blazorise.Link>
+                                        @if (NavigationManager.TryGetQueryString("returnUrl", out string returnUrl))
+                                        {
+                                            <Blazorise.Link To=@string.Concat("/account/register?returnUrl=", returnUrl)>
+                                                Create one
+                                            </Blazorise.Link>
+                                        }
+                                        else
+                                        {
+                                            <Blazorise.Link To="/account/register">
+                                                Create one
+                                            </Blazorise.Link>
+                                        }
                                     </p>
                                 </div>
                             </EditForm>
@@ -53,15 +64,30 @@
 
     private async Task OnValidFormSubmit()
     {
-        await ServiceProvider.Get<SessionProvider>().LoginAsync(1, "user");
+        await Http.Create("/api/account/login")
+           .OnCreated<UserDetails>(async (user) =>
+           {
+               await ServiceProvider.Get<SessionProvider>().LoginAsync(user.Id, user.Role);
 
-        if (NavigationManager.TryGetQueryString("returnUrl", out string returnUrl))
-        {
-            NavigationManager.NavigateTo(returnUrl);
-        }
-        else
-        {
-            NavigationManager.NavigateTo("/");
-        }
+               if (NavigationManager.TryGetQueryString("returnUrl", out string returnUrl))
+               {
+                   NavigationManager.NavigateTo(returnUrl);
+               }
+               else
+               {
+                   NavigationManager.NavigateTo("/");
+               }
+           })
+           .OnUnauthorized(() =>
+           {
+               loginData.Password = "";
+               serverValidator.ClearErrors();
+               serverValidator.DisplayError(nameof(loginData.Password), "Wrong username or password.");
+           })
+           .Post(new UserCredentials()
+           {
+               Username = loginData.Username,
+               Password = loginData.Password
+           });
     }
 }
