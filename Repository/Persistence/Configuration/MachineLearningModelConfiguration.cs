@@ -9,6 +9,8 @@ namespace Repository.Persistence.Configuration
         public void Configure(EntityTypeBuilder<MachineLearningModel> builder)
         {
             builder.HasKey(machineLearningModel => new { machineLearningModel.Id });
+            builder.Property(machineLearningModel => machineLearningModel.Id)
+                .IsRequired();
             builder.Property(machineLearningModel => machineLearningModel.Name)
                 .IsRequired()
                 .HasMaxLength(40);

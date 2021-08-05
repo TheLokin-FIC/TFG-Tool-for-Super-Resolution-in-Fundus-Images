@@ -1,8 +1,8 @@
 ﻿namespace DataTransfer.Input.UserProfile
 {
-    public class UserRegister
+    public class NewPassword
     {
-        public string Username { get; set; }
+        public string OldPassword { get; set; }
         public string Password { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace DataTransfer.Output.MachineLearning
 {
-    public class ModelDetails
+    public class ModelInfo
     {
         public int Id { get; set; }
         public string Category { get; set; }

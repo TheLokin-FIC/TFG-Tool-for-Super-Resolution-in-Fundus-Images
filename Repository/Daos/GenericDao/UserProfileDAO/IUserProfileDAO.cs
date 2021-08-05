@@ -1,8 +1,7 @@
-﻿using Repository.DAOs;
-using Repository.Exceptions;
+﻿using Repository.Exceptions;
 using Repository.Persistence.Models;
 
-namespace Repository.DAOs.UserProfileDAO
+namespace Repository.DAOs.GenericDAO.UserProfileDAO
 {
     public interface IUserProfileDAO : IDAO<UserProfile>
     {

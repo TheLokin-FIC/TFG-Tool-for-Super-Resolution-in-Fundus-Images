@@ -1,7 +1,7 @@
 ﻿using Repository.Persistence.Models;
 using System.Collections.Generic;
 
-namespace Repository.DAOs.SuperResolutionModelDAO
+namespace Repository.DAOs.GenericDAO.SuperResolutionModelDAO
 {
     public interface ISuperResolutionModelDAO : IDAO<SuperResolutionModel>
     {
