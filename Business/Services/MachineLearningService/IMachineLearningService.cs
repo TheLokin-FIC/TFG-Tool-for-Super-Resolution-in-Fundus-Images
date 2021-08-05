@@ -10,10 +10,10 @@ namespace Business.Services.MachineLearningService
     public interface IMachineLearningService
     {
         /// <exception cref="PageException"/>
-        Page<ModelDetails> ModelPage(int pageSize, int pageIndex, string searchTerm);
+        Page<ModelInfo> GetModelPage(int pageSize, int pageIndex, string searchTerm);
 
         /// <exception cref="NotFoundException"/>
-        ResolutionModelDetails ResolutionModelDetails(int modelId);
+        ResolutionModelDetails GetResolutionModel(int modelId);
 
         /// <exception cref="NotFoundException"/>
         /// <exception cref="InternalErrorException"/>

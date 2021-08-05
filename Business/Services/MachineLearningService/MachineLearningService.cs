@@ -6,8 +6,8 @@ using DataTransfer.Output.MachineLearning.SuperResolution;
 using Microsoft.ML.OnnxRuntime;
 using Microsoft.ML.OnnxRuntime.Tensors;
 using Repository.DAOs.Collections;
-using Repository.DAOs.MachineLearningModelDAO;
-using Repository.DAOs.SuperResolutionModelDAO;
+using Repository.DAOs.GenericDAO.MachineLearningModelDAO;
+using Repository.DAOs.GenericDAO.SuperResolutionModelDAO;
 using Repository.Exceptions;
 using Repository.Persistence.Models;
 using System;
@@ -38,25 +38,25 @@ namespace Business.Services.MachineLearningService
             sessions = new Dictionary<Tuple<int, byte>, InferenceSession>();
         }
 
-        public Page<ModelDetails> ModelPage(int pageSize, int pageIndex, string searchTerm)
+        public Page<ModelInfo> GetModelPage(int pageSize, int pageIndex, string searchTerm)
         {
             try
             {
                 PageList<MachineLearningModel> pageList = machineLearningModelDAO.FindPageByTerm(pageSize, pageIndex - 1, searchTerm);
 
-                Page<ModelDetails> page = new()
+                Page<ModelInfo> page = new()
                 {
                     PageSize = pageList.PageSize,
                     PageIndex = pageList.PageIndex + 1,
                     TotalPages = pageList.TotalPages,
-                    Items = new List<ModelDetails>(),
+                    Items = new List<ModelInfo>(),
                     HasPreviousPage = pageList.HasPreviousPage,
                     HasNextPage = pageList.HasNextPage
                 };
 
                 foreach (MachineLearningModel machineLearningModel in pageList.Items)
                 {
-                    page.Items.Add(new ModelDetails()
+                    page.Items.Add(new ModelInfo()
                     {
                         Id = machineLearningModel.Id,
                         Category = machineLearningModel.Name,
@@ -74,7 +74,7 @@ namespace Business.Services.MachineLearningService
             }
         }
 
-        public ResolutionModelDetails ResolutionModelDetails(int modelId)
+        public ResolutionModelDetails GetResolutionModel(int modelId)
         {
             try
             {

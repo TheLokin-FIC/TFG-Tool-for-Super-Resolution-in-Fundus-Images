@@ -2,7 +2,8 @@
 using Business.Utils;
 using DataTransfer.Input.UserProfile;
 using DataTransfer.Output.UserProfile;
-using Repository.DAOs.UserProfileDAO;
+using Microsoft.Data.SqlClient;
+using Repository.DAOs.GenericDAO.UserProfileDAO;
 using Repository.Exceptions;
 using Repository.Persistence.Models;
 using System;
@@ -22,9 +23,9 @@ namespace Business.Services.UserProfileService
         {
             try
             {
-                UserProfile userProfile = userProfileDAO.FindByUsername(username);
+                UserProfile userProfile = userProfileDAO.FindByUsername(username.Trim());
 
-                string encryptedPassword = Encrypter.Crypt(password);
+                string encryptedPassword = Encrypter.Crypt(password.Trim());
                 if (userProfile.EncryptedPassword != encryptedPassword)
                 {
                     throw new AuthenticationException();
@@ -43,26 +44,45 @@ namespace Business.Services.UserProfileService
             }
         }
 
-        public UserDetails Register(UserRegister userRegister)
+        public UserDetails Register(NewUserProfile newUser)
         {
-            IsValidUsername(userRegister.Username);
-            IsValidPassword(userRegister.Password);
-
             try
             {
-                userProfileDAO.FindByUsername(userRegister.Username);
+                userProfileDAO.FindByUsername(newUser.Username);
 
                 throw new ArgumentException("Invalid username");
             }
             catch (InstanceNotFoundException)
             {
-                UserProfile userProfile = new()
+                try
                 {
-                    Role = "user",
-                    Username = userRegister.Username,
-                    EncryptedPassword = Encrypter.Crypt(userRegister.Password),
-                };
-                userProfileDAO.Insert(userProfile);
+                    UserProfile userProfile = new()
+                    {
+                        Role = "user",
+                        Username = newUser.Username.Trim(),
+                        EncryptedPassword = Encrypter.Crypt(newUser.Password.Trim()),
+                    };
+                    userProfileDAO.Insert(userProfile);
+
+                    return new UserDetails()
+                    {
+                        Id = userProfile.Id,
+                        Role = userProfile.Role,
+                        Username = userProfile.Username
+                    };
+                }
+                catch (SqlException e)
+                {
+                    throw new ArgumentException(e.Message);
+                }
+            }
+        }
+
+        public UserDetails GetUser(long userId)
+        {
+            try
+            {
+                UserProfile userProfile = userProfileDAO.Find(userId);
 
                 return new UserDetails()
                 {
@@ -71,21 +91,44 @@ namespace Business.Services.UserProfileService
                     Username = userProfile.Username
                 };
             }
-        }
-
-        private static void IsValidUsername(string username)
-        {
-            if (string.IsNullOrWhiteSpace(username) || username.Length < 4 || username.Length > 24)
+            catch (InstanceNotFoundException)
             {
-                throw new ArgumentException("Invalid username");
+                throw new NotFoundException(userId);
             }
         }
 
-        private static void IsValidPassword(string password)
+        public void ChangePassword(long userId, string oldPassword, string newPassword)
         {
-            if (string.IsNullOrWhiteSpace(password) && password.Length >= 6 && password.Length <= 24)
+            try
             {
-                throw new ArgumentException("Invalid password");
+                UserProfile userProfile = userProfileDAO.Find(userId);
+                if (userProfile.EncryptedPassword != Encrypter.Crypt(oldPassword.Trim()))
+                {
+                    throw new AuthenticationException();
+                }
+
+                userProfile.EncryptedPassword = Encrypter.Crypt(newPassword.Trim());
+                userProfileDAO.Update(userProfile);
+            }
+            catch (InstanceNotFoundException)
+            {
+                throw new NotFoundException(userId);
+            }
+            catch (SqlException e)
+            {
+                throw new ArgumentException(e.Message);
+            }
+        }
+
+        public void DeleteUser(long userId)
+        {
+            try
+            {
+                userProfileDAO.Delete(userId);
+            }
+            catch (InstanceNotFoundException)
+            {
+                throw new NotFoundException(userId);
             }
         }
     }
