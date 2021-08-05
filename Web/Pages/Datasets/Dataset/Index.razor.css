@@ -1,0 +1,160 @@
+﻿.header {
+    height: 322px;
+}
+
+    .header .title {
+        max-width: 1150px;
+        margin: 0 auto;
+    }
+
+    .header img {
+        margin: 55px 18px 20px 0;
+    }
+
+    .header h1 {
+        color: white;
+        font-size: 3.6rem;
+        margin: 55px 0 20px 0;
+        display: inline-flex;
+    }
+
+.main-content {
+    position: relative;
+    max-width: 1150px;
+    margin: 0 auto;
+    top: -126px;
+    background: white;
+    border: 1px solid #c2d1d9;
+    border-radius: 8px;
+    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+}
+
+    .main-content .content {
+        max-width: 1035px;
+        margin: 40px auto;
+        display: grid;
+        grid-column-gap: 35px;
+        grid-template-columns: 500px auto;
+    }
+
+    .main-content .buttons {
+        max-width: 1035px;
+        margin: 20px 40px 0px 40px;
+        display: grid;
+        grid-column-gap: 35px;
+        grid-template-columns: 500px auto;
+    }
+
+    .main-content .content .result {
+        width: 500px;
+        height: 500px;
+        border: 1px solid #c2d1d9;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .main-content .content .result .result-area {
+            width: 100%;
+            height: 100%;
+        }
+
+            .main-content .content .result .result-area img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                position: relative;
+            }
+
+    .main-content .content .try-it {
+        width: 500px;
+        height: 500px;
+        border: 1px solid #c2d1d9;
+        position: relative;
+        overflow-y: scroll;
+    }
+
+@media screen and (max-width: 1190px) {
+    .header .title {
+        max-width: 900px;
+    }
+
+    .main-content {
+        max-width: 900px;
+    }
+
+        .main-content .content {
+            grid-template-columns: 400px auto;
+        }
+
+            .main-content .content .result,
+            .main-content .content .try-it {
+                width: 400px;
+                height: 400px;
+            }
+}
+
+@media screen and (max-width:960px) {
+    .header .title {
+        max-width: 750px;
+    }
+
+    .main-content {
+        max-width: 750px;
+    }
+
+        .main-content .content {
+            max-width: 600px;
+            grid-template-columns: 300px auto;
+        }
+
+            .main-content .content .result,
+            .main-content .content .try-it {
+                width: 290px;
+                height: 290px;
+            }
+}
+
+@media screen and (max-width:600px) {
+    .header {
+        height: 204px;
+    }
+
+        .header .title {
+            max-width: 325px;
+        }
+
+        .header img {
+            display: none;
+        }
+
+        .header h1 {
+            font-size: 2.4rem;
+            margin: 40px 0 0 0;
+        }
+
+    .main-content {
+        top: -70px;
+        max-width: 325px;
+    }
+
+        .main-content .content {
+            max-width: 300px;
+            display: block;
+        }
+
+            .main-content .content .try-it {
+                margin: 50px 0 0;
+            }
+}
+
+@media screen and (max-width: 320px) {
+    .header .title {
+        max-width: 300px;
+    }
+
+    .main-content {
+        max-width: 300px;
+    }
+}

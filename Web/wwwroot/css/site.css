@@ -1,322 +1,6 @@
-﻿section.home {
-    height: 442px;
-    background-color: var(--primary);
+﻿.btn:focus, .btn.focus {
+    box-shadow: none !important;
 }
-
-    section.home .title {
-        max-width: 1150px;
-        margin: 0 auto;
-    }
-
-    section.home img {
-        margin: 55px 18px 20px 0;
-    }
-
-    section.home h1 {
-        color: white;
-        font-size: 3.6rem;
-        margin: 55px 0 20px 0;
-        display: inline-flex;
-    }
-
-    section.home p {
-        color: white;
-        margin: 28px 0;
-        font-size: 1.8rem;
-        line-height: 34px;
-    }
-
-@media screen and (max-width: 1190px) {
-    section.home .title {
-        max-width: 900px;
-    }
-}
-
-@media screen and (max-width: 960px) {
-    section.home .title {
-        max-width: 750px;
-    }
-}
-
-@media screen and (max-width: 600px) {
-    section.home {
-        height: 325px;
-    }
-
-        section.home .title {
-            max-width: 325px;
-        }
-
-        section.home img {
-            display: none;
-        }
-
-        section.home h1 {
-            font-size: 2.4rem;
-            margin: 40px 0 0 0;
-        }
-
-        section.home p {
-            font-size: 1rem;
-            line-height: 22px;
-        }
-}
-
-@media screen and (max-width: 320px) {
-    section.home {
-        height: 325px;
-    }
-
-        section.home .title {
-            max-width: 300px;
-        }
-}
-
-section.search .main-content {
-    position: relative;
-    max-width: 1150px;
-    margin: 0 auto;
-    top: -126px;
-    background: white;
-    border: 1px solid #c2d1d9;
-    border-radius: 8px;
-    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.5);
-    padding: 20px;
-}
-
-@media screen and (max-width: 1190px) {
-    section.search .main-content {
-        max-width: 900px;
-    }
-}
-
-@media screen and (max-width: 960px) {
-    section.search .main-content {
-        max-width: 750px;
-    }
-}
-
-@media screen and (max-width: 600px) {
-    section.search .main-content {
-        max-width: 325px;
-    }
-
-    section.search .main-content {
-        top: -90px;
-    }
-}
-
-@media screen and (max-width: 320px) {
-    section.search .main-content {
-        max-width: 300px;
-    }
-}
-
-section.model,
-section.metrics {
-    max-width: 1035px;
-    margin: 40px auto;
-    display: grid;
-    grid-column-gap: 35px;
-    grid-template-columns: 500px auto;
-}
-
-    section.model .result {
-        width: 500px;
-        height: 500px;
-        border: 1px solid #c2d1d9;
-        border-radius: 8px;
-        overflow: hidden;
-        position: relative;
-    }
-
-        section.model .result .download {
-            position: absolute;
-            z-index: 1;
-        }
-
-            section.model .result .download button {
-                width: 50px;
-                height: 50px;
-                cursor: pointer;
-                margin: 20px 20px 0px;
-                border-radius: 8px;
-                border: 1px solid rgba(194, 209, 217, 0.6);
-                background-color: rgba(255, 255, 255, 0.4);
-                box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.5);
-            }
-
-                section.model .result .download button:active {
-                    width: 49px;
-                    height: 49px;
-                    margin: 21px 21px 0px;
-                    box-shadow: none;
-                }
-
-                section.model .result .download button i {
-                    font-size: 2rem;
-                    position: relative;
-                    top: calc(50% - 0.85rem);
-                    left: calc(50% - 0.85rem);
-                }
-
-        section.model .result .result-area {
-            width: 100%;
-            height: 100%;
-        }
-
-            section.model .result .result-area img {
-                width: 100%;
-                height: 100%;
-                object-fit: contain;
-                position: relative;
-            }
-
-            section.model .result .result-area i {
-                color: var(--secondary);
-                font-size: 8rem;
-                position: absolute;
-                top: calc(50% - 4rem);
-                left: calc(50% - 4rem);
-            }
-
-            section.model .result .result-area svg {
-                width: 3rem;
-                height: 3rem;
-                position: absolute;
-                top: calc(50% - 1.5rem);
-                left: calc(50% - 1.5rem);
-            }
-
-    section.model .try-it,
-    section.metrics .try-it {
-        width: 500px;
-        padding: 40px 0 50px 0;
-    }
-
-        section.model .try-it h1,
-        section.metrics .try-it h1 {
-            color: #53626c;
-            font-size: 2.3rem;
-        }
-
-        section.model .try-it h2,
-        section.metrics .try-it h2 {
-            color: #53626c;
-            font-size: 2rem;
-        }
-
-        section.model .try-it .description,
-        section.metrics .try-it .description {
-            color: #1d2129;
-            font-size: 14px;
-            opacity: 0.85;
-            margin: 50px 0 30px 0;
-        }
-
-    section.metrics .files {
-        width: 500px;
-        height: 500px;
-        position: relative;
-        padding: 8px;
-        border-radius: 16px;
-        border: 2px dashed var(--secondary);
-    }
-
-        section.metrics .files label {
-            padding-bottom: 8px;
-        }
-
-        section.metrics .files ul {
-            height: 440px;
-            overflow-y: scroll;
-        }
-
-    section.metrics .file img {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-    }
-
-    section.metrics .file span {
-        display: inline-block;
-        top: 25%;
-        width: 100%;
-        position: absolute;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    }
-
-    section.metrics .file button:not(.disabled):hover {
-        background: #bbbbbb;
-    }
-
-    section.metrics .files svg {
-        width: 3rem;
-        height: 3rem;
-        position: absolute;
-        top: calc(50% - 1.5rem);
-        left: calc(50% - 1.5rem);
-    }
-
-@media screen and (max-width:960px) {
-    section.model,
-    section.metrics {
-        max-width: 600px;
-        grid-template-columns: 300px auto;
-    }
-
-        section.model .result {
-            width: 300px;
-            height: 300px;
-            margin: 50px 0 0;
-        }
-
-        section.model .try-it,
-        section.metrics .try-it {
-            width: 300px;
-        }
-}
-
-@media screen and (max-width:600px) {
-    section.model,
-    section.metrics {
-        max-width: 300px;
-        display: block;
-    }
-
-        section.model .try-it,
-        section.metrics .try-it {
-            width: auto;
-        }
-}
-
-section.data {
-    padding: 20px;
-    margin: 0 auto;
-    position: relative;
-    color: white;
-    background-color: #404041;
-    border-radius: 8px;
-    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.5);
-}
-
-    section.data table,
-    section.data table tr,
-    section.data table td {
-        color: white !important;
-    }
-
-    section.data select {
-        background-color: rgba(255, 255, 255, 0.8);
-    }
-
-    section.data img {
-        width: 270px;
-        height: 270px;
-        object-fit: contain;
-    }
 
 footer {
     padding: 20px 20px 1px 20px;
@@ -328,10 +12,6 @@ footer {
         text-align: center;
         font-size: 12px;
     }
-
-table {
-    margin: 0 !important;
-}
 
 .form-control .invalid {
     border-color: #dc3545;
@@ -348,13 +28,33 @@ table {
     color: #dc3545;
 }
 
-.input-file {
-    width: 0.1px;
-    height: 0.1px;
-    opacity: 0;
-    overflow: hidden;
-    position: absolute;
-    z-index: -1;
+.btn-download {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    margin: 20px 20px 0px;
+    border-radius: 8px;
+    border: 1px solid rgba(194, 209, 217, 0.6);
+    background-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 1px 3px 6px rgba(0, 0, 0, 0.5);
+}
+
+    .btn-download:active {
+        width: 49px;
+        height: 49px;
+        margin: 21px 21px 0px;
+        box-shadow: none;
+    }
+
+    .btn-download i {
+        font-size: 2rem;
+        position: relative;
+        top: calc(50% - 0.85rem);
+        left: calc(50% - 0.85rem);
+    }
+
+.custom-file {
+    display: none;
 }
 
 .btn-file {

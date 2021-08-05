@@ -27,9 +27,11 @@
     <environment names="Staging,Production">
         <bundle name="wwwroot/bundles/site.min.css" />
     </environment>
+
+    <link rel="stylesheet" type="text/css" href="Web.styles.css" />
 </head>
 <body>
-    <component type="typeof(App)" render-mode="ServerPrerendered" />
+    <component type="typeof(App)" render-mode="Server" />
 
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
@@ -39,6 +41,7 @@
     <script type="text/javascript" src="_content/Blazorise/blazorise.js"></script>
     <script type="text/javascript" src="_content/Blazorise.Charts/blazorise.charts.js"></script>
     <script type="text/javascript" src="_content/Blazorise.Bootstrap/blazorise.bootstrap.js"></script>
+
     <script type="text/javascript" src="_framework/blazor.server.js"></script>
 
     <environment names="Development">

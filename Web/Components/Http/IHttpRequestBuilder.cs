@@ -21,9 +21,17 @@ namespace Web.Components.Http
 
         IHttpRequestBuilder OnCreated<T>(Action<T> todo);
 
+        IHttpRequestBuilder OnNoContent(Action todo);
+
+        IHttpRequestBuilder OnNoContent<T>(Action<T> todo);
+
         IHttpRequestBuilder OnBadRequest(Action todo);
 
         IHttpRequestBuilder OnBadRequest<T>(Action<T> todo);
+
+        IHttpRequestBuilder OnUnauthorized(Action todo);
+
+        IHttpRequestBuilder OnUnauthorized<T>(Action<T> todo);
 
         IHttpRequestBuilder OnNotFound(Action todo);
 

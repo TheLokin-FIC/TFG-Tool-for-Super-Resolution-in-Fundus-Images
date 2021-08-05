@@ -67,23 +67,5 @@ namespace Business.Utils
 
             return bitmap;
         }
-
-        public static Tensor<float> ConvertByteArrayToFloatTensor(byte[] bytes)
-        {
-            // Converts the byte array to a bitmap
-            Bitmap bitmap = ConvertByteArrayToBitmap(bytes);
-
-            // Converts the bitmap to a float tensor and returns it
-            return ConvertBitmapToFloatTensor(bitmap);
-        }
-
-        public static byte[] ConvertFloatTensorToByteArray(Tensor<float> tensor)
-        {
-            // Converts the float tensor to a bitmap
-            Bitmap bitmap = ConvertFloatTensorToBitmap(tensor);
-
-            // Converts the bitmap to a byte array and returns it
-            return ConvertBitmapToByteArray(bitmap);
-        }
     }
 }

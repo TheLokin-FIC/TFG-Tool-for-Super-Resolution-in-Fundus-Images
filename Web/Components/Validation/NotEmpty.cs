@@ -11,6 +11,7 @@ namespace Web.Components.Validation
             {
                 return list.Count > 0;
             }
+
             return false;
         }
     }

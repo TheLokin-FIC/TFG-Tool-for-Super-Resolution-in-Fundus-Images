@@ -1,8 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -82,6 +80,20 @@ namespace Web.Components.Http
             return this;
         }
 
+        public IHttpRequestBuilder OnNoContent(Action todo)
+        {
+            responses.Add(HttpStatusCode.NoContent, OnResponse(todo));
+
+            return this;
+        }
+
+        public IHttpRequestBuilder OnNoContent<T>(Action<T> todo)
+        {
+            responses.Add(HttpStatusCode.NoContent, OnResponse(todo));
+
+            return this;
+        }
+
         public IHttpRequestBuilder OnBadRequest(Action todo)
         {
             responses.Add(HttpStatusCode.BadRequest, OnResponse(todo));
@@ -92,6 +104,20 @@ namespace Web.Components.Http
         public IHttpRequestBuilder OnBadRequest<T>(Action<T> todo)
         {
             responses.Add(HttpStatusCode.BadRequest, OnResponse(todo));
+
+            return this;
+        }
+
+        public IHttpRequestBuilder OnUnauthorized(Action todo)
+        {
+            responses.Add(HttpStatusCode.Unauthorized, OnResponse(todo));
+
+            return this;
+        }
+
+        public IHttpRequestBuilder OnUnauthorized<T>(Action<T> todo)
+        {
+            responses.Add(HttpStatusCode.Unauthorized, OnResponse(todo));
 
             return this;
         }

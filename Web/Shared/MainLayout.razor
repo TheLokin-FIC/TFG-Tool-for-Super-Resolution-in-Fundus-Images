@@ -1,5 +1,10 @@
 ﻿@inherits LayoutComponentBase
 
+@inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
+
+<PageTitle Value="The front page of AI | Fundus AI" />
+
 <Layout>
     <LayoutHeader>
         <Bar Breakpoint="Breakpoint.Desktop" Background="Background.Light" ThemeContrast="ThemeContrast.Light">
@@ -15,10 +20,31 @@
             </BarBrand>
             <BarToggler />
             <BarMenu>
+                <BarStart>
+                    <BarItem>
+                        <BarLink To="/datasets">Datasets</BarLink>
+                    </BarItem>
+                </BarStart>
                 <BarEnd>
                     <BarItem>
-                        <Button Color="Color.Primary">Sign up</Button>
-                        <Button Color="Color.Secondary">Log in</Button>
+                        <AuthorizeView>
+                            <Authorized>
+                                <Button Color="Color.Secondary" Clicked='(async () => { await ServiceProvider.Get<SessionProvider>().LogoutAsync(); NavigationManager.NavigateTo(NavigationManager.Uri, true); })'>
+                                    Logout
+                                </Button>
+                                <Button Color="Color.Primary" Clicked='(() => NavigationManager.NavigateTo("/account"))'>
+                                    Account
+                                </Button>
+                            </Authorized>
+                            <NotAuthorized>
+                                <Button Color="Color.Secondary" Clicked='(() => NavigationManager.NavigateToAndReturn("/login"))'>
+                                    Login
+                                </Button>
+                                <Button Color="Color.Primary" Clicked='(() => NavigationManager.NavigateToAndReturn("/register"))'>
+                                    Register
+                                </Button>
+                            </NotAuthorized>
+                        </AuthorizeView>
                     </BarItem>
                 </BarEnd>
             </BarMenu>

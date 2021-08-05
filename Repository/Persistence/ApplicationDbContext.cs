@@ -9,6 +9,9 @@ namespace Repository.Persistence
     {
         public DbSet<MachineLearningModel> MachineLearningModels { get; set; }
         public DbSet<SuperResolutionModel> SuperResolutionModels { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<Dataset> Datasets { get; set; }
+        public DbSet<Image> Images { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -18,6 +21,9 @@ namespace Repository.Persistence
         {
             new MachineLearningModelConfiguration().Configure(builder.Entity<MachineLearningModel>());
             new SuperResolutionModelConfiguration().Configure(builder.Entity<SuperResolutionModel>());
+            new UserProfileConfiguration().Configure(builder.Entity<UserProfile>());
+            new DatasetConfiguration().Configure(builder.Entity<Dataset>());
+            new ImageConfiguration().Configure(builder.Entity<Image>());
 
             builder.Seed();
         }
