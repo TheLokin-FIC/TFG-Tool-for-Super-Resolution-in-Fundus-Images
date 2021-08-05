@@ -1,3 +1,4 @@
+using Business.Services.DatasetService;
 using Business.Services.MachineLearningService;
 using Business.Services.UserProfileService;
 using Microsoft.AspNetCore.Builder;
@@ -7,9 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using Repository.DAOs.MachineLearningModelDAO;
-using Repository.DAOs.SuperResolutionModelDAO;
-using Repository.DAOs.UserProfileDAO;
+using Repository.DAOs.GenericDAO.DatasetDAO;
+using Repository.DAOs.GenericDAO.ImageDAO;
+using Repository.DAOs.GenericDAO.MachineLearningModelDAO;
+using Repository.DAOs.GenericDAO.SuperResolutionModelDAO;
+using Repository.DAOs.GenericDAO.UserProfileDAO;
 using Repository.Persistence;
 using System;
 using System.IO;
@@ -35,8 +38,11 @@ namespace Server
             services.AddScoped<IMachineLearningModelDAO, MachineLearningModelDAO>();
             services.AddScoped<ISuperResolutionModelDAO, SuperResolutionModelDAO>();
             services.AddScoped<IUserProfileDAO, UserProfileDAO>();
+            services.AddScoped<IDatasetDAO, DatasetDAO>();
+            services.AddScoped<IImageDAO, ImageDAO>();
             services.AddScoped<IMachineLearningService, MachineLearningService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
+            services.AddScoped<IDatasetService, DatasetService>();
 
             services.AddLiveReload();
             services.AddControllers();

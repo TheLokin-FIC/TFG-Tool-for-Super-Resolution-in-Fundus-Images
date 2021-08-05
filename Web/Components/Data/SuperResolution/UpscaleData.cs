@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Web.Components.Validation;
 
 namespace Web.Components.Data.SuperResolution
 {
@@ -11,6 +12,7 @@ namespace Web.Components.Data.SuperResolution
         public byte UpscaleFactor { get; set; }
 
         [Required(ErrorMessage = "Please choose an image.")]
-        public byte[] Image { get; set; }
+        [FileProcessed(ErrorMessage = "Image is loading.")]
+        public FileData Image { get; set; }
     }
 }

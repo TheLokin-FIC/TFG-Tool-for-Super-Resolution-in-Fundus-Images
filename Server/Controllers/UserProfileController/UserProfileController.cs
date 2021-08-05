@@ -38,15 +38,78 @@ namespace Server.Controllers.UserProfileController
         [Route("register")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult Register([FromBody] UserRegister userRegister)
+        public IActionResult Register([FromBody] NewUserProfile newUser)
         {
             try
             {
-                return StatusCode(StatusCodes.Status201Created, userProfileService.Register(userRegister));
+                return StatusCode(StatusCodes.Status201Created, userProfileService.Register(newUser));
             }
             catch (ArgumentException)
             {
                 return StatusCode(StatusCodes.Status400BadRequest);
+            }
+        }
+
+        [HttpGet]
+        [Route("details/{userId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetUser([FromRoute] long userId)
+        {
+            try
+            {
+                return StatusCode(StatusCodes.Status200OK, userProfileService.GetUser(userId));
+            }
+            catch (NotFoundException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+        }
+
+        [HttpPut]
+        [Route("password/{userId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult ChangePassword([FromRoute] long userId, [FromBody] NewPassword newPassword)
+        {
+            try
+            {
+                userProfileService.ChangePassword(userId, newPassword.OldPassword, newPassword.Password);
+
+                return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (NotFoundException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
+            }
+            catch (AuthenticationException)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized);
+            }
+            catch (ArgumentException)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+        }
+
+        [HttpDelete]
+        [Route("delete/{userId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeleteUser([FromRoute] long userId)
+        {
+            try
+            {
+                userProfileService.DeleteUser(userId);
+
+                return StatusCode(StatusCodes.Status204NoContent);
+            }
+            catch (NotFoundException)
+            {
+                return StatusCode(StatusCodes.Status404NotFound);
             }
         }
     }

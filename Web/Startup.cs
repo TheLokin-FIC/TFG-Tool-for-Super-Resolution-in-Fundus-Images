@@ -18,12 +18,12 @@ namespace Web
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -48,7 +48,10 @@ namespace Web
             services.AddBlazorDownloadFile();
 
             services.AddRazorPages();
-            services.AddServerSideBlazor();
+            services.AddServerSideBlazor().AddCircuitOptions(options =>
+            {
+                options.DetailedErrors = true;
+            });
             services.AddAuthorization();
             services.AddAuthentication();
             services.AddBlazoredSessionStorage();

@@ -7,11 +7,11 @@
 
         if (string.IsNullOrWhiteSpace(returnUrl))
         {
-            NavigationManager.NavigateTo("account/login", true);
+            NavigationManager.NavigateTo("/login", true);
         }
         else
         {
-            NavigationManager.NavigateTo($"account/login?returnUrl={returnUrl}", true);
+            NavigationManager.NavigateTo($"/login?returnUrl={returnUrl}", true);
         }
     }
 }

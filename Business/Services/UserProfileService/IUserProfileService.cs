@@ -11,6 +11,17 @@ namespace Business.Services.UserProfileService
         UserDetails Login(string username, string password);
 
         /// <exception cref="ArgumentException"/>
-        UserDetails Register(UserRegister userRegister);
+        UserDetails Register(NewUserProfile newUser);
+
+        /// <exception cref="NotFoundException"/>
+        UserDetails GetUser(long userId);
+
+        /// <exception cref="NotFoundException"/>
+        /// <exception cref="AuthenticationException"/>
+        /// <exception cref="ArgumentException"/>
+        void ChangePassword(long userId, string oldPassword, string newPassword);
+
+        /// <exception cref="NotFoundException"/>
+        void DeleteUser(long userId);
     }
 }

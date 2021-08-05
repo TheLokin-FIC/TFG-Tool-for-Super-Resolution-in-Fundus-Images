@@ -23,7 +23,7 @@ namespace Repository.DAOs.GenericDAO
 
         public virtual bool Exists(params object[] keyValues)
         {
-            return context.Set<E>().Find(keyValues) == null;
+            return context.Set<E>().Find(keyValues) != null;
         }
 
         public virtual E Find(params object[] keyValues)

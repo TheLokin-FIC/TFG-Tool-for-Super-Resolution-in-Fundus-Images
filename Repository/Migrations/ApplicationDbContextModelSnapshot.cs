@@ -19,6 +19,55 @@ namespace Repository.Migrations
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Repository.Persistence.Models.Dataset", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("LastModification")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Public")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(24)
+                        .HasColumnType("nvarchar(24)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Datasets");
+                });
+
+            modelBuilder.Entity("Repository.Persistence.Models.Image", b =>
+                {
+                    b.Property<long>("DatasetId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<byte[]>("File")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<double>("Size")
+                        .HasColumnType("float");
+
+                    b.HasKey("DatasetId", "Name");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("Repository.Persistence.Models.MachineLearningModel", b =>
                 {
                     b.Property<int>("Id")
@@ -192,6 +241,28 @@ namespace Repository.Migrations
                     b.ToTable("UserProfiles");
                 });
 
+            modelBuilder.Entity("Repository.Persistence.Models.Dataset", b =>
+                {
+                    b.HasOne("Repository.Persistence.Models.UserProfile", "UserProfile")
+                        .WithMany("Datasets")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("UserProfile");
+                });
+
+            modelBuilder.Entity("Repository.Persistence.Models.Image", b =>
+                {
+                    b.HasOne("Repository.Persistence.Models.Dataset", "Dataset")
+                        .WithMany("Images")
+                        .HasForeignKey("DatasetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dataset");
+                });
+
             modelBuilder.Entity("Repository.Persistence.Models.SuperResolutionModel", b =>
                 {
                     b.HasOne("Repository.Persistence.Models.MachineLearningModel", "MachineLearningModel")
@@ -203,9 +274,19 @@ namespace Repository.Migrations
                     b.Navigation("MachineLearningModel");
                 });
 
+            modelBuilder.Entity("Repository.Persistence.Models.Dataset", b =>
+                {
+                    b.Navigation("Images");
+                });
+
             modelBuilder.Entity("Repository.Persistence.Models.MachineLearningModel", b =>
                 {
                     b.Navigation("SuperResolutionModels");
+                });
+
+            modelBuilder.Entity("Repository.Persistence.Models.UserProfile", b =>
+                {
+                    b.Navigation("Datasets");
                 });
 #pragma warning restore 612, 618
         }

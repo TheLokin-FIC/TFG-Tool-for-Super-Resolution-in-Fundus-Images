@@ -9,6 +9,8 @@ namespace Repository.Persistence.Configuration
         public void Configure(EntityTypeBuilder<UserProfile> builder)
         {
             builder.HasKey(userProfile => new { userProfile.Id });
+            builder.Property(userProfile => userProfile.Id)
+                .IsRequired();
             builder.Property(userProfile => userProfile.Role)
                 .IsRequired()
                 .HasMaxLength(16);
