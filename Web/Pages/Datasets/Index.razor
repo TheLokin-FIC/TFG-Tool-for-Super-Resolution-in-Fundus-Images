@@ -1,0 +1,305 @@
+﻿@page "/datasets"
+
+@using DataTransfer.Input.Dataset
+@using DataTransfer.Output.Collections
+@using DataTransfer.Output.Dataset
+@using Web.Components.Data.Dataset
+@using Web.Components.Data.Search
+
+@inject IHttpRequestBuilderFactory Http
+@inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
+
+<div class="header">
+    <div class="title">
+        <img src="/images/code.png" />
+        <h1 class="align-middle">Datasets</h1>
+        <p class="font-weight-bold">Explore, analyze<br />and share quality data</p>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="container">
+        <div class="row mb-3">
+            <AuthorizeView>
+                <Authorized>
+                    <Button Class="mr-1" Color="Color.Dark" Clicked="() => modal.Show()">
+                        New dataset
+                    </Button>
+                    <Button Color="Color.Secondary" Clicked='()=> NavigationManager.NavigateTo("/account/datasets")'>
+                        Your datasets
+                    </Button>
+                </Authorized>
+                <NotAuthorized>
+                    <Button Color="Color.Dark" Clicked='() => NavigationManager.NavigateTo("/login?returnUrl=/datasets", true)'>
+                        New dataset
+                    </Button>
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+
+        <div class="row d-block">
+            <EditForm Model="searchData" OnValidSubmit="(() => ChangePage(1))">
+                <div class="input-group mb-3">
+                    <InputText class="form-control" type="search" placeholder="Search datasets" @bind-Value="searchData.Term" />
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+
+        @if (pageDetails.Items.Any())
+        {
+            foreach (DatasetInfo dataset in pageDetails.Items)
+            {
+                <div class="row d-block mb-3">
+                    <div class="card flex-row">
+                        <img class="card-img-left card-img-responsive" src=@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(dataset.Cover)) />
+                        <div class="card-body">
+                            <h5 class="card-title text-truncate">
+                                <NavLink href=@string.Concat("/datasets/", dataset.Id)>@dataset.Title</NavLink>
+                            </h5>
+                            <h6 class="card-subtitle text-muted">Updated @Beautify.DateToText(dataset.Date) ago</h6>
+                            <p class="card-text text-muted">@Beautify.BytesToText(dataset.Size)</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="row d-block mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">
+                            No datasets found
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <nav>
+        <ul class="pagination justify-content-center">
+            @{
+                string disabled;
+                disabled = pageDetails.HasPreviousPage ? string.Empty : "disabled";
+                <li class="page-item @disabled">
+                    <Blazorise.Link Class="page-link" Clicked="(() => ChangePage(pageDetails.PageIndex - 1))">
+                        &laquo;
+                    </Blazorise.Link>
+                </li>
+                <li class="page-item active">
+                    <Blazorise.Link Class="page-link">
+                        @(pageDetails.PageIndex)
+                    </Blazorise.Link>
+                </li>
+                disabled = pageDetails.HasNextPage ? string.Empty : "disabled";
+                <li class="page-item @disabled">
+                    <Blazorise.Link Class="page-link" Clicked="(() => ChangePage(pageDetails.PageIndex + 1))">
+                        &raquo;
+                    </Blazorise.Link>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<Modal @ref="modal" Closed="OnNewDatasetModalClosed">
+    <ModalContent Size="ModalSize.Large" Centered="true">
+        <EditForm enctype="multipart/form-data" Model="datasetData" OnValidSubmit="OnValidNewDatasetFormSubmit">
+            <DataAnnotationsValidator />
+
+            <ModalHeader>
+                <ModalTitle>New dataset</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody Style="padding:0;">
+                <div class="container">
+                    <div class="row" style="padding:10px 0px 10px 0px;">
+                        <div class="col align-self-center">
+                            <InputText type="text" class="form-control" placeholder="Title" @bind-Value="datasetData.Title"></InputText>
+                        </div>
+                        <div class="col align-self-center text-right">
+                            <FileEdit ElementId="file" Filter="image/*" Multiple="true" Changed="@OnNewDatasetFileChanged" Progressed="@OnNewDatasetFileProgressed" Written="@OnNewDatasetFileWritten" />
+                            @{
+                                <label class="btn btn-file" for="file">
+                                    <i class="icon-file fa"></i>
+                                    <span>Browse images</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div style="height:350px; overflow-y:scroll;">
+                    <Table Narrow="true" Borderless="true" Hoverable="true">
+                        <TableBody>
+                            @foreach (FileData file in datasetData.Images)
+                            {
+                                <TableRow>
+                                    <TableRowCell Style="padding:0px;">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col text-truncate align-self-center">
+                                                    <i class="fa fa-image fa-fw"></i>
+                                                    <span>
+                                                        @file.Name
+                                                        (@Beautify.BytesToText(file.Size))
+                                                    </span>
+                                                </div>
+                                                <div class="col-lg-4 col-sm-3 col-3 align-self-center">
+                                                    <Progress Class="align-middle" Size="Size.Small">
+                                                        <ProgressBar Value="@file.Percentage" />
+                                                    </Progress>
+                                                </div>
+                                                <div class="col-2 align-self-center text-right">
+                                                    <Button Size="Size.Small" Clicked="(() => { datasetData.Images.Remove(file); fileNames.Remove(file.Name); }) ">
+                                                        <i class="fa fa-times fa-2x"></i>
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </TableRowCell>
+                                </TableRow>
+                            }
+                        </TableBody>
+                    </Table>
+                </div>
+            </ModalBody>
+            <ModalFooter>
+                <div class="container">
+                    <div class="row">
+                        <div class="col align-self-center">
+                            <ValidationMessage For="@(() => datasetData.Title)" />
+                            <ValidationMessage For="@(() => datasetData.Images)" />
+                        </div>
+                        <div class="col-lg-2 col-sm-3 col-4 align-self-center text-right">
+                            <Switch TValue="bool" @bind-Checked="@datasetData.Public">Public</Switch>
+                        </div>
+                        <div class="col-lg-2 col-sm-3 col-4 align-self-center text-right">
+                            <Button Type="ButtonType.Submit" Color="Color.Primary">Create</Button>
+                        </div>
+                    </div>
+                </div>
+            </ModalFooter>
+        </EditForm>
+    </ModalContent>
+</Modal>
+
+@code {
+    private SearchData searchData = new()
+    {
+        Term = ""
+    };
+    private Page<DatasetInfo> pageDetails = new()
+    {
+        PageSize = 5,
+        PageIndex = 1,
+        Items = new List<DatasetInfo>()
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ChangePage(1);
+    }
+
+    private async Task ChangePage(int pageIndex)
+    {
+        await Http.Create($"/api/datasets/page?pageSize={pageDetails.PageSize}&pageIndex={pageIndex}&searchTerm={searchData.Term}")
+            .OnOk<Page<DatasetInfo>>((page) =>
+            {
+                pageDetails = page;
+            })
+            .Get();
+    }
+
+    private Modal modal;
+    private DatasetData datasetData = new()
+    {
+        Public = false,
+        Images = new List<FileData>()
+    };
+    private Dictionary<string, FileData> fileNames = new();
+
+    private async Task OnNewDatasetFileChanged(FileChangedEventArgs e)
+    {
+        List<IFileEntry> fileEntries = new();
+        foreach (IFileEntry fileEntry in e.Files)
+        {
+            if (fileNames.TryGetValue(fileEntry.Name, out FileData fileData))
+            {
+                datasetData.Images.Remove(fileData);
+                fileNames.Remove(fileEntry.Name);
+            }
+
+            fileData = new FileData()
+            {
+                Name = fileEntry.Name,
+                Size = fileEntry.Size,
+                Percentage = 0
+            };
+            datasetData.Images.Add(fileData);
+            fileNames.Add(fileEntry.Name, fileData);
+            fileEntries.Add(fileEntry);
+        }
+        foreach (IFileEntry file in fileEntries)
+        {
+            using (MemoryStream stream = new())
+            {
+                await file.WriteToStreamAsync(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                using (StreamReader reader = new(stream))
+                {
+                    await reader.ReadToEndAsync();
+                }
+            }
+        }
+    }
+
+    private void OnNewDatasetFileProgressed(FileProgressedEventArgs e)
+    {
+        if (fileNames.TryGetValue(e.File.Name, out FileData fileData))
+        {
+            fileData.Percentage = Convert.ToInt32(e.Percentage);
+        }
+    }
+
+    private void OnNewDatasetFileWritten(FileWrittenEventArgs e)
+    {
+        if (fileNames.TryGetValue(e.File.Name, out FileData fileData))
+        {
+            fileData.File = e.Data;
+        }
+    }
+
+    private void OnNewDatasetModalClosed()
+    {
+        datasetData.Images.Clear();
+        fileNames.Clear();
+    }
+
+    private async Task OnValidNewDatasetFormSubmit()
+    {
+        Session session = await ServiceProvider.Get<SessionProvider>().Session();
+        await Http.Create($"/api/datasets/create/{session.Id}")
+            .OnCreated<long>((id) =>
+            {
+                NavigationManager.NavigateTo($"/datasets/{id}");
+            })
+            .Post(new NewDataset()
+            {
+                Title = datasetData.Title,
+                Public = datasetData.Public,
+                Images = datasetData.Images.Select(x => new NewImage()
+                {
+                    Name = x.Name,
+                    File = x.File
+                }).ToList()
+            });
+        modal.Hide();
+    }
+}

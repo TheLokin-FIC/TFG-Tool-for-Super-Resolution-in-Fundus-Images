@@ -1,0 +1,386 @@
+﻿@page "/datasets/{DatasetId:int}"
+@page "/account/datasets/{DatasetId:int}"
+
+@using DataTransfer.Input.Dataset
+@using DataTransfer.Output.Dataset
+@using Web.Components.Data.Dataset
+
+@inject IBlazorDownloadFileService BlazorDownloadFileService
+@inject IHttpRequestBuilderFactory Http
+@inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
+
+<div class="header" style=@style>
+    <div class="title">
+        <img src="/images/code.png" />
+        <h1 class="align-middle">@datasetDetails.Title</h1>
+
+        <AuthorizeView>
+            <Authorized>
+                <Breadcrumb Style="background:none; font-size:1.5rem;">
+                    <BreadcrumbItem>
+                        <BreadcrumbLink Style="color:white;" To="/account">Account</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink Style="color:white;" To="/account/datasets">Datasets</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink Style="color:white;">@(datasetDetails.Public? "Public" : "Private") • Updated @Beautify.DateToText(datasetDetails.Date) ago</BreadcrumbLink>
+                    </BreadcrumbItem>
+                </Breadcrumb>
+            </Authorized>
+            <NotAuthorized>
+                <Breadcrumb Style="background:none; font-size:1.5rem;">
+                    <BreadcrumbItem>
+                        <BreadcrumbLink Style="color:white;" To="/datasets">Datasets</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink Style="color:white;">@(datasetDetails.Public? "Public" : "Private") • Updated @Beautify.DateToText(datasetDetails.Date) ago</BreadcrumbLink>
+                    </BreadcrumbItem>
+                </Breadcrumb>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="buttons">
+        <div>
+            <AuthorizeView>
+                <Authorized>
+                    <Button Color="Color.Primary" Disabled="@(!datasetDetails.Images.Any())" Clicked="() => modal.Show()">
+                        Update
+                    </Button>
+                    <Button Color="Color.Danger" Disabled="@(!datasetDetails.Images.Any())" Clicked="() => modalConfirm.Show()">
+                        Delete
+                    </Button>
+                </Authorized>
+            </AuthorizeView>
+        </div>
+        <div class="text-right">
+            <Button Color="Color.Dark" Clicked="OnDownloadButton">
+                Download (@Beautify.BytesToText(datasetDetails.Size))
+            </Button>
+        </div>
+    </div>
+    <div class="content">
+        <div class="result">
+            <div class="result-area">
+                @if (selectedFile != null)
+                {
+                    <img src=@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(selectedFile)) />
+                }
+            </div>
+        </div>
+
+        <div class="try-it" style="overflow-y:scroll">
+            <ListGroup Mode="ListGroupMode.Selectable" Flush="true" @bind-SelectedItem="selectedFileName">
+                @foreach (ImageDetails image in datasetDetails.Images)
+                {
+                    <ListGroupItem Name=@image.Name Class="text-truncate" Style="cursor:pointer;" Clicked="() => selectedFile = image.File">
+                        <i class="fa fa-image fa-fw"></i>
+                        <span>
+                            @image.Name
+                            (@Beautify.BytesToText(image.Size))
+                        </span>
+                    </ListGroupItem>
+                }
+            </ListGroup>
+        </div>
+    </div>
+</div>
+
+<Modal @ref="modal" Closed="OnUpdateDatasetModalClosed">
+    <ModalContent Size="ModalSize.Large" Centered="true">
+        <EditForm enctype="multipart/form-data" Model="datasetData" OnValidSubmit="OnValidUpdateDatasetFormSubmit">
+            <DataAnnotationsValidator />
+
+            <ModalHeader>
+                <ModalTitle>Update dataset</ModalTitle>
+                <CloseButton />
+            </ModalHeader>
+            <ModalBody Style="padding:0;">
+                <div class="container">
+                    <div class="row" style="padding:10px 0px 10px 0px;">
+                        <div class="col align-self-center">
+                            <InputText type="text" class="form-control" placeholder="Title" @bind-Value="datasetData.Title"></InputText>
+                        </div>
+                        <div class="col align-self-center text-right">
+                            <FileEdit ElementId="file" Filter="image/*" Multiple="true" Changed="@OnUpdateDatasetFileChanged" Progressed="@OnUpdateDatasetFileProgressed" Written="@OnUpdateDatasetFileWritten" />
+                            @{
+                                <label class="btn btn-file" for="file">
+                                    <i class="icon-file fa"></i>
+                                    <span>Browse images</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div style="height:350px; overflow-y:scroll;">
+                    <Table Narrow="true" Borderless="true" Hoverable="true">
+                        <TableBody>
+                            @foreach (FileData file in datasetData.Images)
+                            {
+                                <TableRow>
+                                    <TableRowCell Style="padding:0px;">
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col text-truncate align-self-center">
+                                                    <i class="fa fa-image fa-fw"></i>
+                                                    <span>
+                                                        @file.Name
+                                                        (@Beautify.BytesToText(file.Size))
+                                                    </span>
+                                                </div>
+                                                <div class="col-lg-4 col-sm-3 col-3 align-self-center">
+                                                    <Progress Class="align-middle" Size="Size.Small">
+                                                        <ProgressBar Value="@file.Percentage" />
+                                                    </Progress>
+                                                </div>
+                                                <div class="col-lg-1 col-2 align-self-center text-right">
+                                                    <Button Size="Size.Small" Clicked="(() => { datasetData.Images.Remove(file); fileNames.Remove(file.Name); }) ">
+                                                        <i class="fa fa-times fa-2x"></i>
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </TableRowCell>
+                                </TableRow>
+                            }
+                        </TableBody>
+                    </Table>
+                </div>
+            </ModalBody>
+            <ModalFooter>
+                <div class="container">
+                    <div class="row">
+                        <div class="col align-self-center">
+                            <ValidationMessage For="@(() => datasetData.Title)" />
+                            <ValidationMessage For="@(() => datasetData.Images)" />
+                        </div>
+                        <div class="col-lg-2 col-sm-3 col-4 align-self-center text-right">
+                            <Switch TValue="bool" @bind-Checked="@datasetData.Public">Public</Switch>
+                        </div>
+                        <div class="col-lg-2 col-sm-3 col-4 align-self-center text-right">
+                            <Button Type="ButtonType.Submit" Color="Color.Primary">Update</Button>
+                        </div>
+                    </div>
+                </div>
+            </ModalFooter>
+        </EditForm>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="modalConfirm">
+    <ModalContent Centered="true">
+        <ModalHeader>
+            <ModalTitle>Confirm deletion</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+            <p>
+                Are you sure you want to permanently delete this dataset?
+            </p>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="() => modalConfirm.Hide()">Cancel</Button>
+            <Button Color="Color.Primary" Clicked="@OnDeleteDatasetButton">Confirm</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public int DatasetId { get; set; }
+    private string style = "background-color: var(--primary);";
+    private DatasetDetails datasetDetails = new()
+    {
+        Images = new List<ImageDetails>()
+    };
+    private string selectedFileName;
+    private byte[] selectedFile;
+
+    protected override async Task OnInitializedAsync()
+    {
+        string uri = "";
+        if (await ServiceProvider.Get<SessionProvider>().IsAuthenticated())
+        {
+            style = "background-color: var(--info);";
+            Session session = await ServiceProvider.Get<SessionProvider>().Session();
+            uri = $"/api/datasets/details/{DatasetId}/{session.Id}";
+        }
+        else
+        {
+            style = "background-color: var(--primary);";
+            uri = $"/api/datasets/details/{DatasetId}";
+        }
+
+        await Http.Create(uri)
+                .OnOk<DatasetDetails>((details) =>
+                {
+                    datasetDetails = details;
+                    ImageDetails image = details.Images[0];
+                    selectedFileName = image.Name;
+                    selectedFile = image.File;
+
+                    datasetData.Title = details.Title;
+                    datasetData.Public = details.Public;
+                    foreach (ImageDetails imageDetails in details.Images)
+                    {
+                        FileData fileData = new FileData()
+                        {
+                            Name = imageDetails.Name,
+                            Size = imageDetails.Size,
+                            Percentage = 100,
+                            File = imageDetails.File
+                        };
+                        datasetData.Images.Add(fileData);
+                        fileNames.Add(fileData.Name, fileData);
+                    }
+                })
+                .OnUnauthorized(() =>
+                {
+                    NavigationManager.NavigateTo("/");
+                })
+                .OnNotFound(() =>
+                {
+                    NavigationManager.NavigateTo("/");
+                })
+                .Get();
+    }
+
+    private async Task OnDownloadButton()
+    {
+        using (MemoryStream stream = new())
+        {
+            using (ZipArchive zipArchive = new(stream, ZipArchiveMode.Create, false))
+            {
+                foreach (ImageDetails image in datasetDetails.Images)
+                {
+                    ZipArchiveEntry zipEntry = zipArchive.CreateEntry(image.Name);
+
+                    using (Stream fileStream = new MemoryStream(image.File))
+                    {
+                        using (Stream zipEntryStream = zipEntry.Open())
+                        {
+                            fileStream.CopyTo(zipEntryStream);
+                        }
+                    }
+                }
+            }
+
+            await BlazorDownloadFileService.DownloadFile($"{datasetDetails.Title}.zip", stream.ToArray(), "application/zip");
+        }
+    }
+
+    private Modal modal;
+    private DatasetData datasetData = new()
+    {
+        Public = false,
+        Images = new List<FileData>()
+    };
+    private Dictionary<string, FileData> fileNames = new();
+
+    private async Task OnUpdateDatasetFileChanged(FileChangedEventArgs e)
+    {
+        List<IFileEntry> fileEntries = new();
+        foreach (IFileEntry fileEntry in e.Files)
+        {
+            if (fileNames.TryGetValue(fileEntry.Name, out FileData fileData))
+            {
+                datasetData.Images.Remove(fileData);
+                fileNames.Remove(fileEntry.Name);
+            }
+
+            fileData = new FileData()
+            {
+                Name = fileEntry.Name,
+                Size = fileEntry.Size,
+                Percentage = 0
+            };
+            datasetData.Images.Add(fileData);
+            fileNames.Add(fileEntry.Name, fileData);
+            fileEntries.Add(fileEntry);
+        }
+        foreach (IFileEntry file in fileEntries)
+        {
+            using (MemoryStream stream = new())
+            {
+                await file.WriteToStreamAsync(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+                using (StreamReader reader = new(stream))
+                {
+                    await reader.ReadToEndAsync();
+                }
+            }
+        }
+    }
+
+    private void OnUpdateDatasetFileProgressed(FileProgressedEventArgs e)
+    {
+        if (fileNames.TryGetValue(e.File.Name, out FileData fileData))
+        {
+            fileData.Percentage = Convert.ToInt32(e.Percentage);
+        }
+    }
+
+    private void OnUpdateDatasetFileWritten(FileWrittenEventArgs e)
+    {
+        if (fileNames.TryGetValue(e.File.Name, out FileData fileData))
+        {
+            fileData.File = e.Data;
+        }
+    }
+
+    private void OnUpdateDatasetModalClosed()
+    {
+        datasetData.Title = datasetDetails.Title;
+        datasetData.Public = datasetDetails.Public;
+        datasetData.Images.Clear();
+        fileNames.Clear();
+        foreach (ImageDetails imageDetails in datasetDetails.Images)
+        {
+            FileData fileData = new FileData()
+            {
+                Name = imageDetails.Name,
+                Size = imageDetails.Size,
+                Percentage = 100,
+                File = imageDetails.File
+            };
+            datasetData.Images.Add(fileData);
+            fileNames.Add(fileData.Name, fileData);
+        }
+    }
+
+    private async Task OnValidUpdateDatasetFormSubmit()
+    {
+        Session session = await ServiceProvider.Get<SessionProvider>().Session();
+        await Http.Create($"/api/datasets/update/{DatasetId}/{session.Id}")
+            .OnNoContent(() =>
+            {
+                NavigationManager.NavigateTo(NavigationManager.Uri, true);
+            })
+            .Put(new NewDataset()
+            {
+                Title = datasetData.Title,
+                Public = datasetData.Public,
+                Images = datasetData.Images.Select(x => new NewImage()
+                {
+                    Name = x.Name,
+                    File = x.File
+                }).ToList()
+            });
+    }
+
+    private Modal modalConfirm;
+
+    private async Task OnDeleteDatasetButton()
+    {
+        Session session = await ServiceProvider.Get<SessionProvider>().Session();
+        await Http.Create($"/api/datasets/delete/{DatasetId}/{session.Id}")
+            .OnNoContent(() =>
+            {
+                NavigationManager.NavigateTo("/account/datasets");
+            })
+            .Delete();
+    }
+}

@@ -33,6 +33,16 @@ namespace Web.Components.Session
             }
         }
 
+        public async Task<bool> IsAuthenticated()
+        {
+            return await sessionStorage.GetItemAsync<Session>(USER_SESSION_KEY) != null;
+        }
+
+        public async Task<Session> Session()
+        {
+            return await sessionStorage.GetItemAsync<Session>(USER_SESSION_KEY);
+        }
+
         public async Task LoginAsync(long userId, string role)
         {
             Session session = new()

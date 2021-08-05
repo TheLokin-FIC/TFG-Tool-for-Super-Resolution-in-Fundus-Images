@@ -80,6 +80,20 @@ namespace Web.Components.Http
             return this;
         }
 
+        public IHttpRequestBuilder OnNoContent(Action todo)
+        {
+            responses.Add(HttpStatusCode.NoContent, OnResponse(todo));
+
+            return this;
+        }
+
+        public IHttpRequestBuilder OnNoContent<T>(Action<T> todo)
+        {
+            responses.Add(HttpStatusCode.NoContent, OnResponse(todo));
+
+            return this;
+        }
+
         public IHttpRequestBuilder OnBadRequest(Action todo)
         {
             responses.Add(HttpStatusCode.BadRequest, OnResponse(todo));

@@ -1,0 +1,92 @@
+﻿@page "/login"
+
+@using DataTransfer.Input.UserProfile
+@using DataTransfer.Output.UserProfile
+@using Web.Components.Data.User
+
+@inject IHttpRequestBuilderFactory Http
+@inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
+
+<div class="h-100">
+    <div class="container h-100">
+        <div class="row justify-content-md-center h-100">
+            <div class="card-wrapper">
+                <div class="brand">
+                    <img src="/images/logo-secondary.jpg">
+                </div>
+                <div class="card fat">
+                    <div class="card-body">
+                        <h4 class="card-title">Login</h4>
+
+                        <EditForm Model="loginData" OnValidSubmit="OnValidFormSubmit">
+                            <ServerSideValidator @ref="serverValidator" />
+                            <DataAnnotationsValidator />
+
+                            <div class="form-group">
+                                <InputText type="text" class="form-control" placeholder="Username" @bind-Value="loginData.Username"></InputText>
+                                <ValidationMessage For="@(() => loginData.Username)" />
+                            </div>
+                            <div class="form-group">
+                                <InputText type="password" class="form-control" placeholder="Password" @bind-Value="loginData.Password"></InputText>
+                                <ValidationMessage For="@(() => loginData.Password)" />
+                            </div>
+                            <button class="btn btn-primary btn-block" type="submit">LOGIN</button>
+                            <div class="d-flex justify-content-center mt-4">
+                                <p>
+                                    Don't have an account?
+                                    @if (NavigationManager.TryGetQueryString("returnUrl", out string returnUrl))
+                                    {
+                                        <Blazorise.Link To=@string.Concat("/register?returnUrl=", returnUrl)>
+                                            Create one
+                                        </Blazorise.Link>
+                                    }
+                                    else
+                                    {
+                                        <Blazorise.Link To="/register">
+                                            Create one
+                                        </Blazorise.Link>
+                                    }
+                                </p>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private LoginData loginData = new();
+    private ServerSideValidator serverValidator;
+
+    private async Task OnValidFormSubmit()
+    {
+        await Http.Create("/api/account/login")
+            .OnCreated<UserDetails>(async (user) =>
+            {
+                await ServiceProvider.Get<SessionProvider>().LoginAsync(user.Id, user.Role);
+
+                if (NavigationManager.TryGetQueryString("returnUrl", out string returnUrl))
+                {
+                    NavigationManager.NavigateTo(returnUrl);
+                }
+                else
+                {
+                    NavigationManager.NavigateTo("/");
+                }
+            })
+            .OnUnauthorized(() =>
+            {
+                loginData.Password = "";
+                serverValidator.ClearErrors();
+                serverValidator.DisplayError(nameof(loginData.Password), "Wrong username or password.");
+            })
+            .Post(new UserCredentials()
+            {
+                Username = loginData.Username.Trim(),
+                Password = loginData.Password.Trim()
+            });
+    }
+}

@@ -12,7 +12,8 @@ namespace Web.Components.Data.SuperResolution
         public byte UpscaleFactor { get; set; }
 
         [NotEmpty(ErrorMessage = "Please choose an image.")]
-        public IList<byte[]> Images { get; set; }
+        [FileProcessed(ErrorMessage = "Images are loading.")]
+        public IList<FileData> Images { get; set; }
 
         public IList<RelatedResolutionModelItem> RelatedResolutionModels { get; set; }
 

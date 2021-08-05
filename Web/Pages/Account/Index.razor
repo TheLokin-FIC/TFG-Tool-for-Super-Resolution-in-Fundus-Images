@@ -1,0 +1,116 @@
+﻿@page "/account"
+
+@attribute [Authorize]
+
+@using DataTransfer.Output.UserProfile
+
+@inject IHttpRequestBuilderFactory Http
+@inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
+
+<div class="header">
+    <div class="title">
+        <img src="/images/code.png" />
+        <h1 class="align-middle">Your account</h1>
+        <Breadcrumb Style="background:none; font-size:1.5rem;">
+            <BreadcrumbItem Style="color:white;" Active="true">
+                <BreadcrumbLink To="/account">Account</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+                <BreadcrumbLink Style="color:white;" To="/account/datasets">Datasets</BreadcrumbLink>
+            </BreadcrumbItem>
+        </Breadcrumb>
+    </div>
+</div>
+
+<div class="main-content">
+    <ul class="list-group">
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-sm-5 ml-3">
+                    <label class="row font-weight-bold">
+                        Username
+                    </label>
+                    <label class="row">
+                        @userDetails.Username
+                    </label>
+                </div>
+                <div class="col-sm-3 ml-auto align-self-center">
+                    <span class="text-muted">
+                        Your username can not be changed.
+                    </span>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <div class="col-sm-5 ml-3">
+                    <label class="row font-weight-bold">
+                        Password
+                    </label>
+                    <label class="row">
+                        ********
+                    </label>
+                </div>
+                <div class="col-sm-3 ml-auto align-self-center">
+                    <Button Class="btn-block" Color="Color.Secondary" Clicked='() => NavigationManager.NavigateTo("/account/password")'>
+                        Modify
+                    </Button>
+                </div>
+            </div>
+        </li>
+        <li class="list-group-item">
+            <div class="row">
+                <Button Class="font-weight-bold" Style="color:var(--danger);" Clicked="() => modalConfirm.Show()">
+                    Close account
+                </Button>
+            </div>
+        </li>
+    </ul>
+</div>
+
+<Modal @ref="modalConfirm">
+    <ModalContent Centered="true">
+        <ModalHeader>
+            <ModalTitle>Close account</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+            <p>
+                Are you sure you want to permanently delete this account?
+            </p>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="() => modalConfirm.Hide()">Cancel</Button>
+            <Button Color="Color.Primary" Clicked="@OnDeleteUserButton">Confirm</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+@code {
+    private UserDetails userDetails = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Session session = await ServiceProvider.Get<SessionProvider>().Session();
+        await Http.Create($"/api/account/details/{session.Id}")
+            .OnOk<UserDetails>((details) =>
+            {
+                userDetails = details;
+            })
+            .Get();
+    }
+
+    private Modal modalConfirm;
+
+    private async Task OnDeleteUserButton()
+    {
+        Session session = await ServiceProvider.Get<SessionProvider>().Session();
+        await Http.Create($"/api/account/delete/{session.Id}")
+            .OnNoContent(async () =>
+            {
+                await ServiceProvider.Get<SessionProvider>().LogoutAsync();
+                NavigationManager.NavigateTo("/", true);
+            })
+            .Delete();
+    }
+}

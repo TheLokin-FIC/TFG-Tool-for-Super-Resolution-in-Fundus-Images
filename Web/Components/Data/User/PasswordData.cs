@@ -3,13 +3,10 @@ using Web.Components.Validation;
 
 namespace Web.Components.Data.User
 {
-    public class RegisterData
+    public class PasswordData
     {
         [Required(ErrorMessage = "Complete this field.")]
-        [MinStringTrimLength(4, ErrorMessage = "Username too short.")]
-        [MaxStringTrimLength(24, ErrorMessage = "Username too long.")]
-        [RegularExpression("^(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$", ErrorMessage = "Don't use special characters.")]
-        public string Username { get; set; }
+        public string OldPassword { get; set; }
 
         [Required(ErrorMessage = "Complete this field.")]
         [MinStringTrimLength(6, ErrorMessage = "Password too short.")]

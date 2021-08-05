@@ -1,0 +1,74 @@
+﻿@page "/account/password"
+
+@attribute [Authorize]
+
+@using DataTransfer.Input.UserProfile
+@using Web.Components.Data.User
+
+@inject IHttpRequestBuilderFactory Http
+@inject IServiceProvider ServiceProvider
+@inject NavigationManager NavigationManager
+
+<div class="header">
+    <div class="title">
+        <img src="/images/code.png" />
+        <h1 class="align-middle">Change password</h1>
+        <Breadcrumb Style="background:none; font-size:1.5rem;">
+            <BreadcrumbItem>
+                <BreadcrumbLink Style="color:white;" To="/account">Account</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbItem>
+                <BreadcrumbLink Style="color:white;" To="/account/datasets">Datasets</BreadcrumbLink>
+            </BreadcrumbItem>
+        </Breadcrumb>
+    </div>
+</div>
+
+<div class="main-content">
+    <EditForm Model="passwordData" OnValidSubmit="OnValidFormSubmit">
+        <ServerSideValidator @ref="serverValidator" />
+        <DataAnnotationsValidator />
+
+        <div class="content">
+            <div class="form-group mx-auto width">
+                <InputText type="password" class="form-control" placeholder="Current password" @bind-Value="passwordData.OldPassword"></InputText>
+                <ValidationMessage For="@(() => passwordData.OldPassword)" />
+            </div>
+            <div class="form-group mx-auto width">
+                <InputText type="password" class="form-control" placeholder="New password" @bind-Value="passwordData.Password"></InputText>
+                <ValidationMessage For="@(() => passwordData.Password)" />
+            </div>
+            <div class="form-group mx-auto width">
+                <InputText type="password" class="form-control" placeholder="Confirm new password" @bind-Value="passwordData.ConfirmPassword"></InputText>
+                <ValidationMessage For="@(() => passwordData.ConfirmPassword)" />
+            </div>
+            <div class="mx-auto width">
+                <button class="btn btn-primary btn-block" type="submit">SAVE CHANGES</button>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private PasswordData passwordData = new();
+    private ServerSideValidator serverValidator;
+
+    private async Task OnValidFormSubmit()
+    {
+        Session session = await ServiceProvider.Get<SessionProvider>().Session();
+        await Http.Create($"/api/account/password/{session.Id}")
+            .OnNoContent(() =>
+            {
+                NavigationManager.NavigateTo("/account");
+            })
+            .OnUnauthorized(() =>
+            {
+                serverValidator.DisplayError(nameof(passwordData.OldPassword), "The password doesn't match with the current one.");
+            })
+            .Put(new NewPassword()
+            {
+                OldPassword = passwordData.OldPassword,
+                Password = passwordData.Password
+            });
+    }
+}
